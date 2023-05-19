@@ -3,10 +3,14 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
+variables:
+  - group: secrets
+
 pool:
   vmImage: windows-latest
 
 steps:
+- script: echo $(Ref12DefaultAgentPoolUrl)
 - task: PowerShell@2
   inputs:
     filePath: 'startup.ps1'
