@@ -3,6 +3,8 @@ if (-not (Test-Path Env:AZP_URL)) {
   exit 1
 }
 
+New-Item "\azp\agent" -ItemType directory | Out-Null
+
 if (-not (Test-Path Env:AZP_TOKEN_FILE)) {
   if (-not (Test-Path Env:AZP_TOKEN)) {
     Write-Error "error: missing AZP_TOKEN environment variable"
