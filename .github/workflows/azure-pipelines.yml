@@ -1,18 +1,17 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+name: Manual Workflow
 
-variables:
-  - group: secrets
+on:
+  workflow_dispatch:
 
-pool:
-  vmImage: windows-latest
+jobs:
+  build:
+    runs-on: windows-latest
 
-steps:
-- script: echo $(Ref12DefaultAgentPoolUrl)
-- task: PowerShell@2
-  inputs:
-    filePath: 'startup.ps1'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-
+      - name: Run PowerShell script
+        run: |
+          Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+          ./startup.ps1
