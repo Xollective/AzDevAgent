@@ -12,6 +12,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run PowerShell script
+        env:
+          AZP_URL: ${{ secrets.AZP_URL }}
+          AZP_TOKEN: ${{ secrets.AZP_TOKEN }}
         run: |
           Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
           ./startup.ps1
