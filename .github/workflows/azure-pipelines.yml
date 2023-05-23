@@ -15,6 +15,7 @@ jobs:
         env:
           AZP_URL: ${{ secrets.AZP_URL }}
           AZP_TOKEN: ${{ secrets.AZP_TOKEN }}
+          AZP_TOKEN_FILE: token.txt
         run: |
           Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
           ./startup.ps1
