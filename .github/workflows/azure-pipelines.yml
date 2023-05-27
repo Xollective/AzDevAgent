@@ -4,6 +4,7 @@ name: Manual Workflow
 #   workflow_dispatch:
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
