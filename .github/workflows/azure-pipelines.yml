@@ -8,6 +8,7 @@
           "required": true,
           "default": "1, 2"
         }
+      }
     }
   },
   "jobs": {
