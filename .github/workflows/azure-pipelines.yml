@@ -29,7 +29,8 @@
           "env": {
             "AZP_URL": "${{ secrets.AZP_URL }}",
             "AZP_TOKEN": "${{ secrets.AZP_TOKEN }}",
-            "AZP_POOL": "RunnerPool"
+            "AZP_POOL": "RunnerPool",
+            "AZP_WORK": "C:/azdev/agent",
           },
           "run": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass\n./startup.ps1\n"
         }
