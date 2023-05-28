@@ -56,9 +56,15 @@ try
 
   Write-Host "4. Running Azure Pipelines agent..." -ForegroundColor Cyan
 
-  .\run.cmd --once
+  $csharpFile = Join-Path $PSScriptRoot "RunWithRetry.cs"
 
-  Write-Host "4. Finished running job" -ForegroundColor Cyan
+  Add-Type -TypeDefinition (Get-Content -Raw -Path $csharpFile) -Language CSharp
+
+  $exitCode = [Program]::Run($PWD)
+  # .\run.cmd --once
+  # $exitCode = $LASTEXITCODE
+
+  Write-Host "4. Finished running job (Exit code:$exitCode)" -ForegroundColor Cyan
 }
 finally
 {
