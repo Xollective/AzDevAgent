@@ -1,13 +1,13 @@
 {
   "name": "Manual Workflow",
   "on": {
-    "workflow_dispatch": null
-  },
-  "inputs": {
-    "runnerIds" : {
-      "description": "List of comma separated integer ids for the runners."
-      "required": true,
-      "default": "1, 2"
+    "workflow_dispatch": {
+      "inputs": {
+        "runnerIds" : {
+          "description": "List of comma separated integer ids for the runners."
+          "required": true,
+          "default": "1, 2"
+        }
     }
   },
   "jobs": {
