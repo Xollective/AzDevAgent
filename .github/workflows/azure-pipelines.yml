@@ -1,27 +1,26 @@
-name: Manual Workflow
-
-# on:
-#   workflow_dispatch:
-
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
-
-jobs:
-  build:
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Run PowerShell script
-        env:
-          AZP_URL: ${{ secrets.AZP_URL }}
-          AZP_TOKEN: ${{ secrets.AZP_TOKEN }}
-          AZP_POOL: RunnerPool
-        run: |
-          Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-          ./startup.ps1
+{
+  "name": "Manual Workflow",
+  "on": {
+    "workflow_dispatch": null
+  },
+  "jobs": {
+    "build": {
+      "runs-on": "windows-latest",
+      "steps": [
+        {
+          "name": "Checkout repository",
+          "uses": "actions/checkout@v2"
+        },
+        {
+          "name": "Run PowerShell script",
+          "env": {
+            "AZP_URL": "${{ secrets.AZP_URL }}",
+            "AZP_TOKEN": "${{ secrets.AZP_TOKEN }}",
+            "AZP_POOL": "RunnerPool"
+          },
+          "run": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass\n./startup.ps1\n"
+        }
+      ]
+    }
+  }
+}
