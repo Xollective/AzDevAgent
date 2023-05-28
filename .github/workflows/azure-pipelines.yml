@@ -15,7 +15,7 @@
     "build": {
       "strategy": {
         "matrix": {
-          "runnerId": "${{ fromJSON(join(' ', [ '[', inputs.runnerIds, ']' ])) }}"
+          "runnerId": "${{ fromJSON(format('[{0}]', inputs.runnerIds)) }}"
         }
       },
       "runs-on": "windows-latest",
