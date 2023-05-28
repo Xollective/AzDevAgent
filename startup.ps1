@@ -46,7 +46,7 @@ try
   Write-Host "3. Configuring Azure Pipelines agent..." -ForegroundColor Cyan
 
   .\config.cmd --unattended `
-    --agent "$(if (Test-Path Env:AZP_AGENT_NAME) { ${Env:AZP_AGENT_NAME} } else { hostname })" `
+    --agent "$(if (Test-Path Env:AZP_AGENT_NAME) { ${Env:AZP_AGENT_NAME} } else { 'Placeholder' })" `
     --url "$(${Env:AZP_URL})" `
     --auth PAT `
     --token "$(Get-Content ${Env:AZP_TOKEN_FILE})" `
@@ -62,7 +62,7 @@ finally
 {
   Write-Host "Cleanup. Removing Azure Pipelines agent..." -ForegroundColor Cyan
 
-  .\config.cmd remove --unattended `
-    --auth PAT `
-    --token "$(Get-Content ${Env:AZP_TOKEN_FILE})"
+ # .\config.cmd remove --unattended `
+ #   --auth PAT `
+ #   --token "$(Get-Content ${Env:AZP_TOKEN_FILE})"
 }
