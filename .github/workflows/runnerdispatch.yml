@@ -1,6 +1,6 @@
 {
   "name": "RunnerDispatch",
-  "id": "runnerdispatch",
+  "run-name": "Agents for ${{ inputs.buildNumber }} by @${{ github.actor }}"
   "on": {
     "workflow_dispatch": {
       "inputs": {
@@ -8,6 +8,11 @@
           "description": "List of comma separated integer ids for the runners.",
           "required": true,
           "default": "1, 2"
+        },
+        "buildNumber" : {
+          "description": "The requesting pipeline build number.",
+          "required": true,
+          "default": "unknown"
         }
       }
     }
