@@ -63,12 +63,11 @@ finally
   $agentName = $env:AZP_AGENT_NAME
   if ($agentName -ieq "Placeholder") {
       Write-Host "Skipping cleanup. This is a placeholder agent."
-      return;
+  } else {
+    Write-Host "Cleanup. Removing Azure Pipelines agent..." -ForegroundColor Cyan
+
+    .\config.cmd remove --unattended `
+      --auth PAT `
+      --token "$(Get-Content ${Env:AZP_TOKEN_FILE})"
   }
-
-  Write-Host "Cleanup. Removing Azure Pipelines agent..." -ForegroundColor Cyan
-
-  .\config.cmd remove --unattended `
-    --auth PAT `
-    --token "$(Get-Content ${Env:AZP_TOKEN_FILE})"
 }
