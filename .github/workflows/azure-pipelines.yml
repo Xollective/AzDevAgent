@@ -1,5 +1,6 @@
 {
-  "name": "Manual Workflow",
+  "name": "RunnerDispatch",
+  "id": "runnerdispatch",
   "on": {
     "workflow_dispatch": {
       "inputs": {
