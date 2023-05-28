@@ -1,6 +1,6 @@
 {
   "name": "RunnerDispatch",
-  "run-name": "Agents for ${{ inputs.buildNumber }} by @${{ github.actor }}"
+  "run-name": "Agents for ${{ inputs.buildNumber }} by @${{ github.actor }}",
   "on": {
     "workflow_dispatch": {
       "inputs": {
