@@ -57,6 +57,8 @@ try
   Write-Host "4. Running Azure Pipelines agent..." -ForegroundColor Cyan
 
   .\run.cmd --once
+
+  Write-Host "4. Finished running job" -ForegroundColor Cyan
 }
 finally
 {
