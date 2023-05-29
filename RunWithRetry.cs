@@ -15,7 +15,6 @@ public class Program
         int maxRetryCount = 3;
         for (int i = 1; i <= maxRetryCount; i++)
         {
-
             ProcessStartInfo processStartInfo = new ProcessStartInfo(Path.Combine(workingDirectory, "run.cmd"), "--once")
             {
                 WorkingDirectory = workingDirectory,
