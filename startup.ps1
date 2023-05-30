@@ -63,6 +63,14 @@ try
     --work "$(if (Test-Path Env:AZP_WORK) { ${Env:AZP_WORK} } else { '_work' })" `
     --replace
 
+  $configFile = Join-Path "$(if (Test-Path Env:AZP_WORK) { ${Env:AZP_WORK} } else { '_work' })" "_config/config.json"
+
+  # Read the file content
+  $configFileContent = Get-Content -Path $configFile
+
+  # Write the file content to the console
+  $configFileContent
+
   Write-Host "4. Running Azure Pipelines agent..." -ForegroundColor Cyan
 
   $csharpFile = Join-Path $PSScriptRoot "RunWithRetry.cs"
