@@ -18,6 +18,10 @@
           "description": "The vm image to run the agent with.",
           "required": true,
           "default": "windows-latest"
+        },
+        "pool" : {
+          "description": "The pool to add the agent.",
+          "required": true,
         }
       }
     }
@@ -40,7 +44,7 @@
           "env": {
             "AZP_URL": "${{ secrets.AZP_URL }}",
             "AZP_TOKEN": "${{ secrets.AZP_TOKEN }}",
-            "AZP_POOL": "RunnerPool",
+            "AZP_POOL": "${{ inputs.pool }}",
             "TAG_IMAGE": "${{ inputs.image }}",
             "TAG_BUILD_NUMBER": "${{ inputs.buildNumber }}",
             "AZP_WORK": "C:/azdev/agent",
