@@ -1,57 +1,44 @@
-{
-  "name": "RunnerDispatch",
-  "run-name": "Agents for ${{ inputs.buildNumber }}",
-  "on": {
-    "workflow_dispatch": {
-      "inputs": {
-        "runnerIds" : {
-          "description": "List of comma separated integer ids for the runners.",
-          "required": true,
-          "default": "1, 2"
-        },
-        "buildNumber" : {
-          "description": "The requesting pipeline build number.",
-          "required": true,
-          "default": "unknown"
-        },
-        "image" : {
-          "description": "The vm image to run the agent with.",
-          "required": true,
-          "default": "windows-latest"
-        },
-        "pool" : {
-          "description": "The pool to add the agent.",
-          "required": true,
-        }
-      }
-    }
-  },
-  "jobs": {
-    "build": {
-      "strategy": {
-        "matrix": {
-          "runnerId": "${{ fromJSON(format('[{0}]', inputs.runnerIds)) }}"
-        }
-      },
-      "runs-on": "${{ inputs.image }}",
-      "steps": [
-        {
-          "name": "Checkout repository",
-          "uses": "actions/checkout@v2"
-        },
-        {
-          "name": "Run PowerShell script",
-          "env": {
-            "AZP_URL": "${{ secrets.AZP_URL }}",
-            "AZP_TOKEN": "${{ secrets.AZP_TOKEN }}",
-            "AZP_POOL": "${{ inputs.pool }}",
-            "TAG_IMAGE": "${{ inputs.image }}",
-            "TAG_BUILD_NUMBER": "${{ inputs.buildNumber }}",
-            "AZP_WORK": "C:/azdev/agent",
-          },
-          "run": "Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass\n./startup.ps1\n"
-        }
-      ]
-    }
-  }
-}
+name: RunnerDispatch
+run-name: "Agents for ${{ inputs.buildNumber }}"
+on:
+  workflow_dispatch:
+    inputs:
+      runnerIds:
+        description: "List of comma separated integer ids for the runners."
+        required: true
+        default: "1, 2"
+      buildNumber:
+        description: "The requesting pipeline build number."
+        required: true
+        default: "unknown"
+      image:
+        description: "The vm image to run the agent with."
+        required: true
+        default: "windows-latest"
+      pool:
+        description: "The pool to add the agent."
+        required: true
+      token:
+        description: "The token to use for the agent."
+        required: false
+        default: ''
+jobs:
+  build:
+    strategy:
+      matrix:
+        runnerId: ${{ fromJSON(format('[{0}]', inputs.runnerIds)) }}
+    runs-on: ${{ inputs.image }}
+    steps:
+      - name: "Checkout repository"
+        uses: "actions/checkout@v2"
+      - name: "Run PowerShell script"
+        env:
+          AZP_URL: ${{ secrets.AZP_URL }}
+          AZP_TOKEN: ${{ inputs.token != '' && inputs.token || secrets.AZP_TOKEN }}
+          AZP_POOL: ${{ inputs.pool }}
+          TAG_IMAGE: ${{ inputs.image }}
+          TAG_BUILD_NUMBER: ${{ inputs.buildNumber }}
+          AZP_WORK: "C:/azdev/agent"
+        run: |
+          Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+          ./startup.ps1
