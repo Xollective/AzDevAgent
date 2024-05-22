@@ -20,6 +20,9 @@ public class Program
                 WorkingDirectory = workingDirectory,
                 UseShellExecute = false,
             };
+
+            processStartInfo.EnvironmentVariables.Remove("PSModulePath");
+
             Process process = new Process();
             process.StartInfo = processStartInfo;
 
