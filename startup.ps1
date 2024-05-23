@@ -3,7 +3,7 @@ if (-not (Test-Path Env:AZP_URL)) {
   exit 1
 }
 
-New-Item "/azp/agent" -ItemType directory | Out-Null
+New-Item "/azpdev/agent" -ItemType directory | Out-Null
 
 if (-not (Test-Path Env:AZP_TOKEN_FILE)) {
   if (-not (Test-Path Env:AZP_TOKEN)) {
@@ -11,7 +11,7 @@ if (-not (Test-Path Env:AZP_TOKEN_FILE)) {
     exit 1
   }
 
-  $Env:AZP_TOKEN_FILE = "/azp/.token"
+  $Env:AZP_TOKEN_FILE = "/azpdev/.token"
   $Env:AZP_TOKEN | Out-File -FilePath $Env:AZP_TOKEN_FILE
 }
 
@@ -33,7 +33,7 @@ $Env:AzureRegion = $azureRegion
 
 Write-Host "##vso[task.setvariable variable=AzureRegion;]$azureRegion"
 
-Set-Location "/azp/agent"
+Set-Location "/azpdev/agent"
 
 Write-Host "1. Determining matching Azure Pipelines agent..." -ForegroundColor Cyan
 
@@ -52,9 +52,9 @@ $wc = New-Object System.Net.WebClient
 $wc.DownloadFile($packageUrl, "$(Get-Location)/agent.$archSfx")
 
 if ($IsLinux) {
-  tar -xzf agent.$archSfx -C /azp/agent
+  tar -xzf agent.$archSfx -C /azpdev/agent
 } else {
-  Expand-Archive -Path "agent.zip" -DestinationPath "/azp/agent"
+  Expand-Archive -Path "agent.zip" -DestinationPath "/azpdev/agent"
 }
 
 try
