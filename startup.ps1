@@ -3,7 +3,7 @@ if (-not (Test-Path Env:AZP_URL)) {
   exit 1
 }
 
-New-Item "\azp\agent" -ItemType directory | Out-Null
+New-Item "/azp/agent" -ItemType directory | Out-Null
 
 if (-not (Test-Path Env:AZP_TOKEN_FILE)) {
   if (-not (Test-Path Env:AZP_TOKEN)) {
@@ -11,7 +11,7 @@ if (-not (Test-Path Env:AZP_TOKEN_FILE)) {
     exit 1
   }
 
-  $Env:AZP_TOKEN_FILE = "\azp\.token"
+  $Env:AZP_TOKEN_FILE = "/azp/.token"
   $Env:AZP_TOKEN | Out-File -FilePath $Env:AZP_TOKEN_FILE
 }
 
@@ -24,7 +24,14 @@ if ((Test-Path Env:AZP_WORK) -and -not (Test-Path $Env:AZP_WORK)) {
 # Let the agent ignore the token env variables
 $Env:VSO_AGENT_IGNORE = "AZP_TOKEN,AZP_TOKEN_FILE"
 
-Set-Location "\azp\agent"
+$azureRegion = Invoke-RestMethod -Headers @{"Metadata"="true"} -Uri "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-08-01&format=text"
+Write-Host "Azure Region: $azureRegion"
+
+$Env:AzureRegion = $azureRegion
+
+Write-Host "##vso[task.setvariable variable=AzureRegion;]$azureRegion"
+
+Set-Location "/azp/agent"
 
 Write-Host "1. Determining matching Azure Pipelines agent..." -ForegroundColor Cyan
 
@@ -37,15 +44,15 @@ Write-Host $packageUrl
 Write-Host "2. Downloading and installing Azure Pipelines agent..." -ForegroundColor Cyan
 
 $wc = New-Object System.Net.WebClient
-$wc.DownloadFile($packageUrl, "$(Get-Location)\agent.zip")
+$wc.DownloadFile($packageUrl, "$(Get-Location)/agent.zip")
 
-Expand-Archive -Path "agent.zip" -DestinationPath "\azp\agent"
+Expand-Archive -Path "agent.zip" -DestinationPath "/azp/agent"
 
 try
 {
   Write-Host "3. Configuring Azure Pipelines agent..." -ForegroundColor Cyan
-
-  .\config.cmd --unattended `
+  https://vstsagentpackage.azureedge.net/agent/3.239.1/vsts-agent-win-x64-3.239.1.zip
+  ./config.cmd --unattended `
     --agent "$(if (Test-Path Env:AZP_AGENT_NAME) { ${Env:AZP_AGENT_NAME} } else { hostname })" `
     --url "$(${Env:AZP_URL})" `
     --auth PAT `
@@ -54,7 +61,7 @@ try
     --work "$(if (Test-Path Env:AZP_WORK) { ${Env:AZP_WORK} } else { '_work' })" `
     --replace
 
-  .\config.cmd --unattended `
+  ./config.cmd --unattended `
     --agent "$(if (Test-Path Env:AZP_AGENT_NAME) { ${Env:AZP_AGENT_NAME} } else { hostname })" `
     --url "$(${Env:AZP_URL})" `
     --auth PAT `
@@ -70,7 +77,7 @@ try
   Add-Type -TypeDefinition (Get-Content -Raw -Path $csharpFile) -Language CSharp
 
   $exitCode = [Program]::Run($PWD)
-  # .\run.cmd --once
+  # ./run.cmd --once
   # $exitCode = $LASTEXITCODE
 
   Write-Host "4. Finished running job (Exit code:$exitCode)" -ForegroundColor Cyan
@@ -83,7 +90,7 @@ finally
   } else {
     Write-Host "Cleanup. Removing Azure Pipelines agent..." -ForegroundColor Cyan
 
-    .\config.cmd remove --unattended `
+    ./config.cmd remove --unattended `
       --auth PAT `
       --token "$(Get-Content ${Env:AZP_TOKEN_FILE})"
   }

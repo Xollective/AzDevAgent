@@ -36,13 +36,15 @@ jobs:
       - name: "Checkout repository"
         uses: "actions/checkout@v2"
       - name: "Run PowerShell script"
+        shell: pwsh
         env:
           AZP_URL: ${{ secrets.AZP_URL }}
           AZP_TOKEN: ${{ inputs.token != '' && inputs.token || secrets.AZP_TOKEN }}
           AZP_POOL: ${{ inputs.pool }}
-          AZP_WORK: "C:/azdev/agent"
+          # AZP_WORK: "C:/azdev/agent"
           Capability.OperationId: ${{ inputs.operationId }}
           Capability.Image: ${{ inputs.image }}
         run: |
-          Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-          ./startup.ps1
+          $Env:AZP_WORK = if($IsLinux) { Resolve-Path /azdev/agent } else { "C:/azdev/agent" }
+          Get-ChildItem Env:
+          startup.ps1
