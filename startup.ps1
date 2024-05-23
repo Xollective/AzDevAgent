@@ -51,7 +51,7 @@ Expand-Archive -Path "agent.zip" -DestinationPath "/azp/agent"
 try
 {
   Write-Host "3. Configuring Azure Pipelines agent..." -ForegroundColor Cyan
-  https://vstsagentpackage.azureedge.net/agent/3.239.1/vsts-agent-win-x64-3.239.1.zip
+  
   ./config.cmd --unattended `
     --agent "$(if (Test-Path Env:AZP_AGENT_NAME) { ${Env:AZP_AGENT_NAME} } else { hostname })" `
     --url "$(${Env:AZP_URL})" `
