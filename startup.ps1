@@ -66,7 +66,7 @@ try
     chmod +x ./run.sh
   } 
 
-  ./"config.$sfx" --unattended `
+  . "./config.$sfx" --unattended `
     --agent "$(if (Test-Path Env:AZP_AGENT_NAME) { ${Env:AZP_AGENT_NAME} } else { hostname })" `
     --url "$(${Env:AZP_URL})" `
     --auth PAT `
@@ -75,7 +75,7 @@ try
     --work "$(if (Test-Path Env:AZP_WORK) { ${Env:AZP_WORK} } else { '_work' })" `
     --replace
 
-  ./"config.$sfx" --unattended `
+  . "./config.$sfx" --unattended `
     --agent "$(if (Test-Path Env:AZP_AGENT_NAME) { ${Env:AZP_AGENT_NAME} } else { hostname })" `
     --url "$(${Env:AZP_URL})" `
     --auth PAT `
