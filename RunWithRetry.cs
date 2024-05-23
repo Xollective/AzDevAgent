@@ -6,7 +6,7 @@ using System.Threading;
 
 public class Program
 {
-    public static int Run(string workingDirectory)
+    public static int Run(string workingDirectory, string suffix)
     {
         Environment.CurrentDirectory = workingDirectory;
         Console.WriteLine(workingDirectory);
@@ -15,7 +15,7 @@ public class Program
         int maxRetryCount = 3;
         for (int i = 1; i <= maxRetryCount; i++)
         {
-            ProcessStartInfo processStartInfo = new ProcessStartInfo(Path.Combine(workingDirectory, "run.cmd"), "--once")
+            ProcessStartInfo processStartInfo = new ProcessStartInfo(Path.Combine(workingDirectory, $"run.{suffix}"), "--once")
             {
                 WorkingDirectory = workingDirectory,
                 UseShellExecute = false,

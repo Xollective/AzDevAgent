@@ -35,8 +35,11 @@ Set-Location "/azp/agent"
 
 Write-Host "1. Determining matching Azure Pipelines agent..." -ForegroundColor Cyan
 
+$archSfx = if ($IsLinux) { "tar.gz" } else { "zip" }
+$os = if ($IsLinux) { "linux" } else { "win" }
+
 $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$(Get-Content ${Env:AZP_TOKEN_FILE})"))
-$package = Invoke-RestMethod -Headers @{Authorization=("Basic $base64AuthInfo")} "$(${Env:AZP_URL})/_apis/distributedtask/packages/agent?platform=win-x64&`$top=1"
+$package = Invoke-RestMethod -Headers @{Authorization=("Basic $base64AuthInfo")} "$(${Env:AZP_URL})/_apis/distributedtask/packages/agent?platform=$os-x64&`$top=1"
 $packageUrl = $package[0].Value.downloadUrl
 
 Write-Host $packageUrl
@@ -44,15 +47,26 @@ Write-Host $packageUrl
 Write-Host "2. Downloading and installing Azure Pipelines agent..." -ForegroundColor Cyan
 
 $wc = New-Object System.Net.WebClient
-$wc.DownloadFile($packageUrl, "$(Get-Location)/agent.zip")
+$wc.DownloadFile($packageUrl, "$(Get-Location)/agent.$archSfx")
 
-Expand-Archive -Path "agent.zip" -DestinationPath "/azp/agent"
+if ($IsLinux) {
+  tar -xzf agent.$archSfx -C /azp/agent
+} else {
+  Expand-Archive -Path "agent.zip" -DestinationPath "/azp/agent"
+}
 
 try
 {
   Write-Host "3. Configuring Azure Pipelines agent..." -ForegroundColor Cyan
-  
-  ./config.cmd --unattended `
+
+  $sfx = if($IsLinux) { "sh" } else { "cmd" }
+
+  if ($IsLinux) {
+    chmod +x ./config.sh
+    chmod +x ./run.sh
+  } 
+
+  ./"config.$sfx" --unattended `
     --agent "$(if (Test-Path Env:AZP_AGENT_NAME) { ${Env:AZP_AGENT_NAME} } else { hostname })" `
     --url "$(${Env:AZP_URL})" `
     --auth PAT `
@@ -61,7 +75,7 @@ try
     --work "$(if (Test-Path Env:AZP_WORK) { ${Env:AZP_WORK} } else { '_work' })" `
     --replace
 
-  ./config.cmd --unattended `
+  ./"config.$sfx" --unattended `
     --agent "$(if (Test-Path Env:AZP_AGENT_NAME) { ${Env:AZP_AGENT_NAME} } else { hostname })" `
     --url "$(${Env:AZP_URL})" `
     --auth PAT `
@@ -76,7 +90,7 @@ try
 
   Add-Type -TypeDefinition (Get-Content -Raw -Path $csharpFile) -Language CSharp
 
-  $exitCode = [Program]::Run($PWD)
+  $exitCode = [Program]::Run($PWD, $sfx)
   # ./run.cmd --once
   # $exitCode = $LASTEXITCODE
 
