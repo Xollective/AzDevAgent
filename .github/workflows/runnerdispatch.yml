@@ -47,4 +47,4 @@ jobs:
         run: |
           $Env:AZP_WORK = if($IsLinux) { Resolve-Path /azdev/agent } else { "C:/azdev/agent" }
           Get-ChildItem Env:
-          startup.ps1
+          ./startup.ps1
