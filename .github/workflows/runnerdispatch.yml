@@ -45,6 +45,5 @@ jobs:
           Capability.OperationId: ${{ inputs.operationId }}
           Capability.Image: ${{ inputs.image }}
         run: |
-          $Env:AZP_WORK = if($IsLinux) { Resolve-Path /azdev/agent } else { "C:/azdev/agent" }
           Get-ChildItem Env:
           ./startup.ps1
