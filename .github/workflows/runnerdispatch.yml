@@ -22,6 +22,10 @@ on:
         description: "The token to use for the agent."
         required: false
         default: ''
+      operationId:
+          description: "The operation ID to identify agents."
+          required: false
+          default: 'unspecified'
 jobs:
   build:
     strategy:
@@ -36,9 +40,9 @@ jobs:
           AZP_URL: ${{ secrets.AZP_URL }}
           AZP_TOKEN: ${{ inputs.token != '' && inputs.token || secrets.AZP_TOKEN }}
           AZP_POOL: ${{ inputs.pool }}
-          TAG_IMAGE: ${{ inputs.image }}
-          TAG_BUILD_NUMBER: ${{ inputs.buildNumber }}
           AZP_WORK: "C:/azdev/agent"
+          Capability.OperationId: ${{ inputs.operationId }}
+          Capability.Image: ${{ inputs.image }}
         run: |
           Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
           ./startup.ps1
