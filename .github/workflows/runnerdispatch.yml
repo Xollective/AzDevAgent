@@ -18,6 +18,14 @@ on:
       pool:
         description: "The pool to add the agent."
         required: true
+      agentName:
+        description: "The name of the agent."
+        required: false
+        default: ''
+      url:
+        description: "The organization url to use for the agent."
+        required: false
+        default: ''
       token:
         description: "The token to use for the agent."
         required: false
@@ -39,6 +47,7 @@ jobs:
         shell: pwsh
         env:
           AZP_URL: ${{ secrets.AZP_URL }}
+          AZP_AGENT_NAME: ${{ inputs.agentName }}
           AZP_TOKEN: ${{ inputs.token != '' && inputs.token || secrets.AZP_TOKEN }}
           AZP_POOL: ${{ inputs.pool }}
           # AZP_WORK: "C:/azdev/agent"
