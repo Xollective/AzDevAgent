@@ -47,7 +47,7 @@ jobs:
         shell: pwsh
         env:
           AZP_URL: ${{ secrets.AZP_URL }}
-          AZP_AGENT_NAME: ${{ inputs.agentName }}
+          AZP_AGENT_NAME: ${{ inputs.agentName }}${{ matrix.runnerId }}
           AZP_TOKEN: ${{ inputs.token != '' && inputs.token || secrets.AZP_TOKEN }}
           AZP_POOL: ${{ inputs.pool }}
           # AZP_WORK: "C:/azdev/agent"
