@@ -1,18 +1,18 @@
-﻿using System.Text.Json;
+﻿using System.Runtime.CompilerServices;
+using System.Text.Json;
 
 namespace AzDevAgentRunner.Tests;
 
 public class UnitTest1
 {
-    public string Data = """
-
-    """;
 
     public record BuildData(string authtoken, string builduri);
 
-    private BuildData ReadData()
+    private BuildData ReadData([CallerFilePath]string path = null)
     {
-        return JsonSerializer.Deserialize<BuildData>(Data)!;
+        path = Path.Combine(Path.GetDirectoryName(path), "data.json");
+        var dataString = File.ReadAllText(path);
+        return JsonSerializer.Deserialize<BuildData>(dataString)!;
     }
 
     public Task RunAsync(string runnerId, string runnerIds)

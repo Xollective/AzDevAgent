@@ -54,7 +54,7 @@ public class Program
                 var result = new RunCommand()
                 {
                     AdoBuildUri = m.Option(c => ref c.AdoBuildUri, name: "uri", required: true,
-                        description: "annotated build uri (e.g. $(System.CollectionUri)$(System.TeamProject)?buildId=$(Build.BuildId)&jobId=$(System.JobId)&planId=$(System.PlanId)&taskId=$(System.TaskInstanceId) )"),
+                        description: "annotated build uri (e.g. $(System.CollectionUri)$(System.TeamProject)?buildId=$(Build.BuildId)&jobId=$(System.JobId)&planId=$(System.PlanId)&taskId=$(System.TaskInstanceId)&timelineId=$(System.TimelineId) )"),
                     RunnerId = m.Option(c => ref c.RunnerId, name: "runnerId", required: true),
                     RunnerIds = m.Option(c => ref c.RunnerIds, name: "runnerIds", required: true),
                     AdoToken = m.Option(c => ref c.AdoToken, name: "pat", description: "The access token (e.g. $(System.AccessToken) )", required: true),

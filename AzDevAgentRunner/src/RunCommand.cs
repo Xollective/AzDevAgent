@@ -7,6 +7,7 @@ using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 using TaskResult = Microsoft.TeamFoundation.DistributedTask.WebApi.TaskResult;
+using TimelineRecord = Microsoft.TeamFoundation.DistributedTask.WebApi.TimelineRecord;
 
 namespace AzDevAgentRunner;
 
@@ -35,11 +36,31 @@ public class RunCommand
 
         async Task setTaskResult(TaskResult result)
         {
+            if (result == TaskResult.Succeeded)
+            {
+                await taskClient.UpdateTimelineRecordsAsync(
+                    scopeIdentifier: build.Project.Id,
+                    planType: taskInfo.HubName,
+                    planId: taskInfo.PlanId,
+                    timelineId: taskInfo.TimelineId,
+                    new[]
+                    {
+                        new TimelineRecord()
+                        {
+                            Id = taskInfo.TaskId,
+                            Variables =
+                            {
+                                ["TaskId"] = taskInfo.TaskId.ToString()
+                            }
+                        }
+                    });
+            }
+
             await taskClient.RaisePlanEventAsync(
-                build.Project.Id,
-                taskInfo.HubName,
-                taskInfo.PlanId,
-                new TaskCompletedEvent(
+                scopeIdentifier: build.Project.Id,
+                planType: taskInfo.HubName,
+                planId: taskInfo.PlanId,
+                eventData: new TaskCompletedEvent(
                     taskInfo.JobId,
                     taskInfo.TaskId,
                     result));
@@ -111,11 +132,11 @@ public class RunCommand
                 }
             }
         }
-        catch (OperationCanceledException ex)
+        catch (Exception ex) when (ex is OperationCanceledException || ex is TaskCanceledException)
         {
             await setTaskResult(TaskResult.Canceled);
         }
     }
 
-    public record TaskInfo(Guid JobId, Guid PlanId, Guid TaskId, string HubName = "build");
+    public record TaskInfo(Guid JobId, Guid PlanId, Guid TaskId, Guid TimelineId, string HubName = "build");
 }
