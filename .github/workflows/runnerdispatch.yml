@@ -34,8 +34,8 @@ on:
         description: "The token to use for the agent."
         required: false
         default: ''
-      operationId:
-          description: "The operation ID to identify agents."
+      taskId:
+          description: "The task ID to for the task which queued the agents. (e.g. $(System.TaskInstanceId) )"
           required: false
           default: 'unspecified'
 jobs:
@@ -57,7 +57,7 @@ jobs:
           AZP_RUNNER_ID: ${{ runnerId }}
           AZP_RUNNER_IDS: "${{ inputs.runnerIds }}"
           # AZP_WORK: "C:/azdev/agent"
-          Capability.OperationId: ${{ inputs.operationId }}
+          Capability.TaskId: ${{ inputs.taskId }}
           Capability.Image: ${{ inputs.image }}
         run: |
           Get-ChildItem Env:
