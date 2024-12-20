@@ -66,7 +66,7 @@ public class Program
 
                 return result;
             },
-            r => r.RunAsync(cts.Token));
+            r => r.RunAsync(cts));
 
         await rootCommand.InvokeAsync(precedingArgs.ToArray());
 

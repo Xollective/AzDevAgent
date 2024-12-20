@@ -27,7 +27,7 @@ public class UnitTest1
             RunnerIds = runnerIds
         };
 
-        return runCommand.RunAsync(CancellationToken.None);
+        return runCommand.RunAsync(new CancellationTokenSource());
     }
 
     [Fact]

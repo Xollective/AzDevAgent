@@ -23,8 +23,9 @@ public class RunCommand
 
     public const string ReadyRunnerId = "*ready*";
 
-    public async Task RunAsync(CancellationToken token)
+    public async Task RunAsync(CancellationTokenSource agentCancellation)
     {
+        var token = agentCancellation.Token;
         var adoBuildUri = BuildUri.ParseBuildUri(AdoBuildUri);
         var taskInfo = adoBuildUri.DeserializeFromParameters<TaskInfo>();
 
@@ -131,11 +132,29 @@ public class RunCommand
                     properties = await client.GetBuildPropertiesAsync(adoBuildUri.Project, adoBuildUri.BuildId);
                 }
             }
+
+            while (!IsCompleted(build) && !agentCancellation.IsCancellationRequested)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(PollSeconds));
+
+                build = await client.GetBuildAsync(adoBuildUri.Project, adoBuildUri.BuildId);
+            }
+
+            agentCancellation.CancelAfter(TimeSpan.FromSeconds(AgentTimeoutSeconds));
         }
-        catch (Exception ex) when (ex is OperationCanceledException || ex is TaskCanceledException)
+        catch (Exception ex)
         {
-            await setTaskResult(TaskResult.Canceled);
+            if (ex is OperationCanceledException || ex is TaskCanceledException)
+            {
+                await setTaskResult(TaskResult.Canceled);
+            }
         }
+    }
+
+    private bool IsCompleted(Build build)
+    {
+        var result = build.Result;
+        return result != null && result != BuildResult.None;
     }
 
     public record TaskInfo(Guid JobId, Guid PlanId, Guid TaskId, Guid TimelineId, string HubName = "build");
