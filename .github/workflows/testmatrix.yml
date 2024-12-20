@@ -1,4 +1,4 @@
-name: RunnerDispatch
+name: TestMatrix
 run-name: "Agents for ${{ inputs.buildNumber }}"
 on:
   workflow_dispatch:
