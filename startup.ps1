@@ -24,7 +24,7 @@ if ((Test-Path Env:AZP_WORK) -and -not (Test-Path $Env:AZP_WORK)) {
 }
 
 # Let the agent ignore the token env variables
-$Env:VSO_AGENT_IGNORE = "AZP_TOKEN,AZP_TOKEN_FILE"
+$Env:VSO_AGENT_IGNORE = "AZP_TOKEN,AZP_TOKEN_FILE,AZP_TASK_URL"
 
 $azureRegion = Invoke-RestMethod -Headers @{"Metadata"="true"} -Uri "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-08-01&format=text"
 Write-Host "Azure Region: $azureRegion"
@@ -59,6 +59,8 @@ if ($IsLinux) {
 
 try
 {
+  $pat = $(Get-Content ${Env:AZP_TOKEN_FILE})
+
   Write-Host "3. Configuring Azure Pipelines agent..." -ForegroundColor Cyan
 
   $sfx = if($IsLinux) { "sh" } else { "cmd" }
@@ -88,13 +90,20 @@ try
 
   Write-Host "4. Running Azure Pipelines agent..." -ForegroundColor Cyan
 
-  $csharpFile = Join-Path $PSScriptRoot "RunWithRetry.cs"
+  $agentRunnerDll = Join-Path $PSScriptRoot "tools/AzDevAgentRunner.dll"
 
-  Add-Type -TypeDefinition (Get-Content -Raw -Path $csharpFile) -Language CSharp
+  $taskUrl = $Env:AZP_TASK_URL
 
-  $exitCode = [Program]::Run($PWD, $sfx)
+  . dotnet $agentRunnerDll `
+    --uri "$taskUrl" `
+    --runnerIds "$(${Env:AZP_RUNNER_IDS})" `
+    --runnerId "$(${Env:AZP_RUNNER_ID})" `
+    --pat "$pat" `
+    -- run.cmd --once
+
+  # $exitCode = [Program]::Run($PWD, $sfx)
   # ./run.cmd --once
-  # $exitCode = $LASTEXITCODE
+  $exitCode = $LASTEXITCODE
 
   Write-Host "4. Finished running job (Exit code:$exitCode)" -ForegroundColor Cyan
 }
