@@ -21,5 +21,5 @@ jobs:
         d1: [0,1]
     uses: ./.github/workflows/testmatrix.job.yml
     with:
-      jobCount: 1
+      jobCount: ${{ fromJSON(inputs.jobCount) }}
       jobIndex: ${{ strategy.job-index }}
