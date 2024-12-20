@@ -22,4 +22,4 @@ jobs:
     uses: ./.github/workflows/testmatrix.job.yml
     with:
       jobCount: ${{ inputs.jobCount }}
-      jobIndex: ${{ matrix.d1 }}${{ matrix.d0 }}
+      jobIndex: ${{ strategy.job-index }}
