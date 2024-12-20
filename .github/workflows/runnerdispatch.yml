@@ -52,9 +52,9 @@ jobs:
         env:
           AZP_URL: ${{ secrets.AZP_URL }}
           AZP_TASK_URL: ${{ inputs.taskUrl }}
-          AZP_AGENT_NAME: ${{ inputs.agentName }}${{ matrix.runnerId }}
+          AZP_AGENT_NAME: "${{ inputs.agentName != '' && inputs.agentName || inputs.taskId }}--${{ matrix.runnerId }}"
           AZP_POOL: ${{ inputs.pool }}
-          AZP_RUNNER_ID: ${{ runnerId }}
+          AZP_RUNNER_ID: ${{ matrix.runnerId }}
           AZP_RUNNER_IDS: "${{ inputs.runnerIds }}"
           # AZP_WORK: "C:/azdev/agent"
           Capability.TaskId: ${{ inputs.taskId }}
