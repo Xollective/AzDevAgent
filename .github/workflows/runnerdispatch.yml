@@ -26,6 +26,10 @@ on:
         description: "The organization url to use for the agent."
         required: false
         default: ''
+      taskUrl:
+        description: "The annotated task url for the task. (e.g. $(System.CollectionUri)$(System.TeamProject)?buildId=$(Build.BuildId)&jobId=$(System.JobId)&planId=$(System.PlanId)&taskId=$(System.TaskInstanceId) )"
+        required: false
+        default: ''
       token:
         description: "The token to use for the agent."
         required: false
@@ -43,16 +47,19 @@ jobs:
     steps:
       - name: "Checkout repository"
         uses: "actions/checkout@v2"
-      - name: "Run PowerShell script"
+      - name: "Run Agent"
         shell: pwsh
         env:
           AZP_URL: ${{ secrets.AZP_URL }}
+          AZP_TASK_URL: ${{ inputs.taskUrl }}
           AZP_AGENT_NAME: ${{ inputs.agentName }}${{ matrix.runnerId }}
-          AZP_TOKEN: ${{ inputs.token != '' && inputs.token || secrets.AZP_TOKEN }}
           AZP_POOL: ${{ inputs.pool }}
+          AZP_RUNNER_ID: ${{ runnerId }}
+          AZP_RUNNER_IDS: "${{ inputs.runnerIds }}"
           # AZP_WORK: "C:/azdev/agent"
           Capability.OperationId: ${{ inputs.operationId }}
           Capability.Image: ${{ inputs.image }}
         run: |
           Get-ChildItem Env:
+          $Env:AZP_TOKEN = "${{ inputs.token != '' && inputs.token || secrets.AZP_TOKEN }}"
           ./startup.ps1
