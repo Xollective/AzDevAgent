@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzDevAgentRunner", "src\AzDevAgentRunner.csproj", "{6832CDDA-BDFF-8A9A-393A-0DF7147C5544}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzDevAgentRunner.Tests", "AzDevAgentRunner.Tests\AzDevAgentRunner.Tests.csproj", "{A5DDF55C-AF03-696D-06BA-D66ADB7064A6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6832CDDA-BDFF-8A9A-393A-0DF7147C5544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6832CDDA-BDFF-8A9A-393A-0DF7147C5544}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6832CDDA-BDFF-8A9A-393A-0DF7147C5544}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6832CDDA-BDFF-8A9A-393A-0DF7147C5544}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5DDF55C-AF03-696D-06BA-D66ADB7064A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5DDF55C-AF03-696D-06BA-D66ADB7064A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5DDF55C-AF03-696D-06BA-D66ADB7064A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5DDF55C-AF03-696D-06BA-D66ADB7064A6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
