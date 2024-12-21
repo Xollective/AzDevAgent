@@ -3,8 +3,8 @@ run-name: "Agents for ${{ inputs.buildNumber }}"
 on:
   workflow_dispatch:
     inputs:
-      runnerIds:
-        description: "List of comma separated integer ids for the runners."
+      runnerCount:
+        description: "Number of requested runners"
         required: true
         default: "1"
       buildNumber:
@@ -64,7 +64,7 @@ jobs:
           Capability.TaskId: ${{ inputs.taskId }}
           Capability.Image: ${{ inputs.image }}
         run: |
-          
+
           Get-ChildItem Env:
           $Env:AZP_TOKEN = "${{ inputs.token != '' && inputs.token || secrets.AZP_TOKEN }}"
           ./startup.ps1
