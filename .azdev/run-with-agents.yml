@@ -1,0 +1,53 @@
+parameters:
+- name: image
+  type: string
+  default: 'windows-latest'
+  values:
+  - 'windows-latest'
+  - 'ubuntu-latest'
+- name: pool
+  displayName: Target Pool
+  type: string
+- name: azureRegion
+  type: string
+  default: ' '
+  values:
+  - ' '
+  - westus
+  - eastus
+  - northcentralus
+- name: jobs
+  type: jobList
+  default:
+  - job:
+    steps: 
+    - script: |
+        echo Default job
+
+jobs:
+- ${{ if ne(length(parameters.jobs), 0) }}:
+  - template: run-with-agents.invoke.yml
+    parameters:
+      image: ${{ parameters.image }}
+      workers: ${{ length(parameters.jobs) }}
+      pool: ${{ parameters.pool }}
+      jobName: start_agents
+  - ${{ each job in parameters.jobs }}:
+    - job: ${{ job.job }}
+      variables:
+      - name: StartAgentsTaskId
+        value: $[dependencies.start_agents.outputs['start_agents.TaskId']] 
+      - ${{ if job.variables }}:
+        - ${{ job.variables }}
+      dependsOn: 
+        - start_agents
+        - ${{ if job.dependsOn }}:
+          - ${{ job.dependsOn }}
+      pool:
+        name: ${{ parameters.pool }}
+        demands:
+        - Capability.TaskId -equals $(StartAgentsTaskId)
+        - ${{ if ne(parameters.azureRegion) }}:
+          - AzureRegion -equals ${{ parameters.azureRegion }}
+      steps: 
+        - ${{ job.steps }}

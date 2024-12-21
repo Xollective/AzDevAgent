@@ -8,7 +8,7 @@ on:
         required: true
         default: "1"
       buildNumber:
-        description: "The requesting pipeline build number."
+        description: "The requesting pipeline build info (name, build number, url)."
         required: true
         default: "unknown"
       image:
@@ -22,12 +22,16 @@ on:
         description: "The name of the agent."
         required: false
         default: ''
+      azureRegion:
+        description: "The required azure region (if any)."
+        required: false
+        default: ''
       url:
         description: "The organization url to use for the agent."
         required: false
         default: ''
       taskUrl:
-        description: "The annotated task url for the task. (e.g. $(System.CollectionUri)$(System.TeamProject)?buildId=$(Build.BuildId)&jobId=$(System.JobId)&planId=$(System.PlanId)&taskId=$(System.TaskInstanceId) )"
+        description: "The annotated URL for the start-agents InvokeRestAPI task. (value: $(System.CollectionUri)$(System.TeamProject)?buildId=$(Build.BuildId)&jobId=$(System.JobId)&planId=$(System.PlanId)&taskId=$(System.TaskInstanceId)&timelineId=$(System.TimelineId) )"
         required: false
         default: ''
       token:
@@ -36,7 +40,7 @@ on:
         default: ''
       taskId:
           description: "The task ID to for the task which queued the agents. (e.g. $(System.TaskInstanceId) )"
-          required: false
+          required: true
           default: 'unspecified'
 jobs:
   build:
@@ -60,6 +64,7 @@ jobs:
           Capability.TaskId: ${{ inputs.taskId }}
           Capability.Image: ${{ inputs.image }}
         run: |
+          
           Get-ChildItem Env:
           $Env:AZP_TOKEN = "${{ inputs.token != '' && inputs.token || secrets.AZP_TOKEN }}"
           ./startup.ps1
