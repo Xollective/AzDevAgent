@@ -99,10 +99,10 @@ try
     --runnerIds "$(${Env:AZP_RUNNER_IDS})" `
     --runnerId "$(${Env:AZP_RUNNER_ID})" `
     --pat "$pat" `
-    -- run.cmd --once
+    -- "run.$sfx" --once
 
   # $exitCode = [Program]::Run($PWD, $sfx)
-  # ./run.cmd --once
+  # "./run.$sfx" --once
   $exitCode = $LASTEXITCODE
 
   Write-Host "4. Finished running job (Exit code:$exitCode)" -ForegroundColor Cyan
