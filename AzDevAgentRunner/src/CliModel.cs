@@ -6,7 +6,7 @@ namespace AzDevAgentRunner;
 
 public class CliModel
 {
-    public static void Bind<T>(Command command, Func<CliModel<T>, T> getOptions, Func<T, Task> runAsync)
+    public static void Bind<T>(Command command, Func<CliModel<T>, T> getOptions, Func<T, Task<int>> runAsync)
     {
         var model = new CliModel<T>(command);
         getOptions(model);
@@ -14,11 +14,11 @@ public class CliModel
         // Disable options mode so that real target values get created in handler
         model.OptionsMode = false;
 
-        command.SetHandler(context =>
+        command.SetHandler(async context =>
         {
             var target = getOptions(model);
             model.Apply(target, context);
-            return runAsync(target);
+            context.ExitCode = await runAsync(target);
         });
     }
 }

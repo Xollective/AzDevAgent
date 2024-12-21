@@ -23,8 +23,6 @@ public class UnitTest1
         {
             AdoBuildUri = data.builduri,
             AdoToken = data.authtoken,
-            RunnerId = runnerId,
-            RunnerIds = runnerIds
         };
 
         return runCommand.RunAsync(new CancellationTokenSource());
