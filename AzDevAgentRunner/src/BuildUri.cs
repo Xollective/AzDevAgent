@@ -8,10 +8,11 @@ namespace AzDevAgentRunner;
 
 public record BuildUri(Uri OrganizationUri, string Project, NameValueCollection Parameters)
 {
-    private static JsonSerializerOptions SerializerOptions = new JsonSerializerOptions()
+    public static JsonSerializerOptions SerializerOptions = new JsonSerializerOptions()
     {
         PropertyNameCaseInsensitive = true,
-        NumberHandling = JsonNumberHandling.AllowReadingFromString
+        NumberHandling = JsonNumberHandling.AllowReadingFromString,
+        AllowTrailingCommas = true
     };
 
     public int BuildId { get; set; }

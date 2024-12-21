@@ -32,6 +32,7 @@ public class SubProcessRunner(string executable, IEnumerable<string> args, Cance
                 }
                 catch { }
             });
+
             await process.WaitForExitAsync();
 
             exitCode = process.ExitCode;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.CommandLine;
 using System.Diagnostics;
-using Microsoft.VisualStudio.Services.CircuitBreaker;
 
 namespace AzDevAgentRunner;
 
@@ -36,24 +35,45 @@ public class Program
             ? new SubProcessRunner(remainingArgs[0], remainingArgs.Skip(1), cts.Token)
             : null;
 
-        var rootCommand = new RootCommand("Run multiple self-hosted agents");
-        CliModel.Bind<RunCommand>(
-            rootCommand,
-            m =>
-            {
-                var result = new RunCommand(agentRunner)
+        var rootCommand = new RootCommand
+        {
+            CliModel.Bind<RunOperation>(
+                new Command("runagent", "Run command until it completes or build finishes. Also completes agent invocation task."),
+                m =>
                 {
-                    AdoBuildUri = m.Option(c => ref c.AdoBuildUri, name: "uri", required: true,
-                        description: "annotated build uri (e.g. $(System.CollectionUri)$(System.TeamProject)?buildId=$(Build.BuildId)&jobId=$(System.JobId)&planId=$(System.PlanId)&taskId=$(System.TaskInstanceId)&timelineId=$(System.TimelineId) )"),
-                    AdoToken = m.Option(c => ref c.AdoToken, name: "pat", description: "The access token (e.g. $(System.AccessToken) )", required: true),
-                };
+                    var result = new RunOperation(agentRunner)
+                    {
+                        AdoBuildUri = m.Option(c => ref c.AdoBuildUri, name: "uri", required: true,
+                            description: "annotated build uri (e.g. $(System.CollectionUri)$(System.TeamProject)?buildId=$(Build.BuildId)&jobId=$(System.JobId)&planId=$(System.PlanId)&taskId=$(System.TaskInstanceId)&timelineId=$(System.TimelineId) )"),
+                        AdoToken = m.Option(c => ref c.AdoToken, name: "pat", description: "The access token (e.g. $(System.AccessToken) )", required: true),
+                    };
 
-                m.Option(c => ref c.PollSeconds, name: "pollSeconds");
-                m.Option(c => ref c.AgentTimeoutSeconds, name: "timeoutSeconds");
+                    m.Option(c => ref c.PollSeconds, name: "pollSeconds");
+                    m.Option(c => ref c.AgentTimeoutSeconds, name: "timeoutSeconds");
 
-                return result;
-            },
-            r => r.RunAsync(cts));
+                    return result;
+                },
+                r => r.RunAsync(cts)),
+
+            CliModel.Bind<ReserveOperation>(
+                new Command("reserve", "Reserve a slot for a github runner Azure Devops agent"),
+                m =>
+                {
+                    var result = new ReserveOperation(m.Console)
+                    {
+                        AdoBuildUri = m.Option(c => ref c.AdoBuildUri, name: "uri", required: true,
+                            description: "annotated build uri (e.g. $(System.CollectionUri)$(System.TeamProject)?buildId=$(Build.BuildId)&jobId=$(System.JobId)&planId=$(System.PlanId)&taskId=$(System.TaskInstanceId)&timelineId=$(System.TimelineId) )"),
+                        AdoToken = m.Option(c => ref c.AdoToken, name: "pat", description: "The access token (e.g. $(System.AccessToken) )", required: true),
+                        AgentName = m.Option(c => ref c.AgentName, name: "agentName", description: "The name of the agent", required: false),
+                        SlotCount = m.Option(c => ref c.SlotCount, name: "slotCount", description: "The number of slots available for reservation", required: true),
+                    };
+
+                    m.Option(c => ref c.PollSeconds, name: "pollSeconds");
+
+                    return result;
+                },
+                r => r.RunAsync())
+        };
 
         return await rootCommand.InvokeAsync(precedingArgs.ToArray());
     }

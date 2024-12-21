@@ -1,12 +1,13 @@
 ﻿using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.CommandLine.IO;
 
 namespace AzDevAgentRunner;
 
 public class CliModel
 {
-    public static void Bind<T>(Command command, Func<CliModel<T>, T> getOptions, Func<T, Task<int>> runAsync)
+    public static Command Bind<T>(Command command, Func<CliModel<T>, T> getOptions, Func<T, Task<int>> runAsync)
     {
         var model = new CliModel<T>(command);
         getOptions(model);
@@ -16,16 +17,20 @@ public class CliModel
 
         command.SetHandler(async context =>
         {
+            model.Console = context.Console ?? model.Console;
             var target = getOptions(model);
             model.Apply(target, context);
             context.ExitCode = await runAsync(target);
         });
+
+        return command;
     }
 }
 
 public class CliModel<T>(Command command)
 {
     public bool OptionsMode { get; set; } = true;
+    public IConsole Console { get; set; } = new SystemConsole();
 
     public delegate ref TField RefFunc<TField>(T model);
 
