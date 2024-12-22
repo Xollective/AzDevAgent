@@ -3,12 +3,10 @@ on:
     inputs:
       envName:
         description: "Name of environment."
-        required: true
         type: string
         default: 'testenv'
       sharedVarName:
         description: "Name of environment variable used to coordinate."
-        required: true
         type: string
         default: 'jobindexvar'
       jobCount:
