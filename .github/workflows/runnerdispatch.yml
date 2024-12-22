@@ -3,14 +3,18 @@ run-name: "Agents for ${{ inputs.buildNumber }}"
 on:
   workflow_dispatch:
     inputs:
-      runnerCount:
-        description: "Number of requested runners"
-        required: true
-        default: "1"
+      agentName:
+        description: "The name of the agent."
+        required: false
+        default: ''
       buildNumber:
         description: "The requesting pipeline build info (name, build number, url)."
         required: true
         default: "unknown"
+      jobCount:
+        description: "Number of requested runners"
+        required: true
+        default: "1"
       image:
         description: "The vm image to run the agent with."
         required: true
@@ -18,16 +22,8 @@ on:
       pool:
         description: "The pool to add the agent."
         required: true
-      agentName:
-        description: "The name of the agent."
-        required: false
-        default: ''
-      azureRegion:
+      targetAzureRegion:
         description: "The required azure region (if any)."
-        required: false
-        default: ''
-      url:
-        description: "The organization url to use for the agent."
         required: false
         default: ''
       taskUrl:
@@ -38,32 +34,16 @@ on:
         description: "The token to use for the agent."
         required: false
         default: ''
-      taskId:
-          description: "The task ID to for the task which queued the agents. (e.g. $(System.TaskInstanceId) )"
-          required: true
-          default: 'unspecified'
 jobs:
-  build:
+  stage:
     strategy:
+      max-parallel: ${{ fromJSON(inputs.parallelism) }}
       matrix:
-        runnerId: ${{ fromJSON(format('[{0}]', inputs.runnerIds)) }}
-    runs-on: ${{ inputs.image }}
-    steps:
-      - name: "Checkout repository"
-        uses: "actions/checkout@v2"
-      - name: "Run Agent"
-        shell: pwsh
-        env:
-          AZP_URL: ${{ secrets.AZP_URL }}
-          AZP_TASK_URL: ${{ inputs.taskUrl }}
-          AZP_AGENT_NAME: "${{ inputs.agentName != '' && inputs.agentName || inputs.taskId }}--${{ matrix.runnerId }}"
-          AZP_POOL: ${{ inputs.pool }}
-          AZP_RUNNER_ID: ${{ matrix.runnerId }}
-          AZP_RUNNER_IDS: "${{ inputs.runnerIds }}"
-          # AZP_WORK: "C:/azdev/agent"
-          Capability.TaskId: ${{ inputs.taskId }}
-          Capability.Image: ${{ inputs.image }}
-        run: |
-          Get-ChildItem Env:
-          $Env:AZP_TOKEN = "${{ inputs.token != '' && inputs.token || secrets.AZP_TOKEN }}"
-          ./startup.ps1
+        threadIndex: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
+    uses: ./.github/workflows/runnerdispatch.thread.yml
+    secrets:
+      token: ${{ inputs.token }}
+    with:
+      env: ${{ toJSON(inputs) }}
+      parallelism: ${{ fromJSON(inputs.parallelism) }}
+      jobIndex: ${{ strategy.job-index }}

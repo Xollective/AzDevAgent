@@ -94,7 +94,7 @@ try
 
   $taskUrl = $Env:AZP_TASK_URL
 
-  . dotnet $agentRunnerDll `
+  . dotnet $agentRunnerDll run `
     --uri "$taskUrl" `
     --runnerIds "$(${Env:AZP_RUNNER_IDS})" `
     --runnerId "$(${Env:AZP_RUNNER_ID})" `

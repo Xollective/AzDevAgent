@@ -14,23 +14,34 @@ env: ${{ fromJson(inputs.env) }}
 jobs:
   run:
     outputs:
-      hasmorejobs: ${{ steps.runstep.outputs.hasmorejobs }}
+      hasmorejobs: ${{ steps.run.outputs.hasmorejobs }}
     runs-on: ${{ fromJSON(inputs.env).image }}
     steps:
       - name: "Checkout repository"
         uses: "actions/checkout@v2"
+      - name: "Reserve and setup state"
+        id: setup
+        shell: pwsh
+        run: |
+          $azureRegion = Invoke-RestMethod -Headers @{"Metadata"="true"} -Uri "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-08-01&format=text"
+          Write-Host "Azure Region: $azureRegion"
+
+          $Env:AzureRegion = $azureRegion
+
+          if ("${{ env.targetAzureRegion }}" -eq $azureRegion) {
+          
+          }
+
+          . dotnet tools/AzDevAgentRunner.exe reserve --taskUrl ${{ env.taskUrl }} --token ${{ env.token }} --jobCount ${{ env.jobCount }}
       - name: "Run Agent"
+        id: run
+        if: ${{ steps.setup.outputs.isReserved == 'true' }}
         shell: pwsh
         env:
-          AZP_URL: ${{ secrets.AZP_URL }}
           AZP_TASK_URL: ${{ env.taskUrl }}
-          AZP_AGENT_NAME: "${{ inputs.agentName != '' && inputs.agentName || inputs.taskId }}--${{ matrix.runnerId }}"
           AZP_POOL: ${{ env.pool }}
-          # AZP_WORK: "C:/azdev/agent"
-          Capability.TaskId: ${{ env.taskId }}
           Capability.Image: ${{ env.image }}
         run: |
           Get-ChildItem Env:
-          # $Env:AZP_TOKEN = "${{ inputs.token != '' && inputs.token || secrets.AZP_TOKEN }}"
           # ./startup.ps1
     
