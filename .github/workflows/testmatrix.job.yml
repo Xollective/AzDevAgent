@@ -1,53 +1,25 @@
 on:
   workflow_call:
     inputs:
-      envName:
-        description: "Name of environment."
+      env:
+        description: "Input environment."
         type: string
-        default: 'testenv'
-      sharedVarName:
-        description: "Name of environment variable used to coordinate."
-        type: string
-        default: 'jobindexvar'
-      jobCount:
-        description: "List of comma separated integer ids for the runners."
-        required: true
-        type: number
+        default: '{}'
       jobIndex:
         description: "The requesting pipeline build number."
         required: true
         type: number
-jobs:
-  build:
-    # if: ${{ inputs.jobIndex < inputs.jobCount }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-      repository-projects: write
-    steps:
-      - name: Setup environment
-        shell: pwsh
-        env: 
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.event.repository.name }}
-          OWNER: ${{ github.repository_owner }}
-          SHARED_VAR: ${{ env[inputs.sharedVarName] }}
-        run: |
-          Write-Host ${{ inputs.jobIndex }}
-          Write-Host Env eval ${{ env[inputs.sharedVarName] }}
-          Write-Host Env eval ${{ env.jobindexvar }}
-          Write-Host Env SHARED_VAR=$Env:SHARED_VAR
-          gh api `
-            --method POST `
-            -H "Accept: application/vnd.github+json" `
-            -H "X-GitHub-Api-Version: 2022-11-28" `
-            "/repos/$Env:OWNER/$Env:REPO/environments/${{ inputs.envName }}/variables" `
-            -f "name=${{ inputs.sharedVarName }}" -f "value=${{ inputs.jobIndex }}"
+    outputs:
+      stopjobthread: ${{ jobs.run.outputs.stopjobthread }}
 
-      - name: "Run Agent"
+env: ${{ fromJson(inputs.env) }}
+
+jobs:
+  run:
+    if: ${{ inputs.jobIndex < inputs.jobCount }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Reserve and Run Agent"
         shell: pwsh
         run: |
-          Write-Host Env eval ${{ env.jobindexvar }}
-          Write-Host Env ${{ env[inputs.sharedVarName] }}
-          Write-Host ${{ inputs.jobIndex }}
+          echo "stobjobthread=true" >> $Env:GITHUB_OUTPUT

@@ -1,0 +1,29 @@
+on:
+  workflow_call:
+    inputs:
+      jobCount:
+        description: "List of comma separated integer ids for the runners."
+        required: true
+        type: number
+      jobIndex:
+        description: "The requesting pipeline build number."
+        required: true
+        type: number
+      parallelism:
+        description: "The requesting pipeline build number."
+        required: true
+        default: 2
+        type: number
+jobs:
+  job0:
+    if: ${{ inputs.jobIndex < inputs.parallelism }}
+    uses: ./.github/workflows/testmatrix.job.yml
+    with:
+      jobCount: ${{ fromJSON(inputs.jobCount) }}
+  job1:
+    needs: job0
+    uses: ./.github/workflows/testmatrix.job.yml
+    if: ${{ contains(needs.*.outputs.stopjobthread, 'true') }}
+    uses: ./.github/workflows/testmatrix.job.yml
+    with:
+      jobCount: ${{ fromJSON(inputs.jobCount) }}
