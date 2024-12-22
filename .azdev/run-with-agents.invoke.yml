@@ -42,7 +42,6 @@ jobs:
               "image": "${{ parameters.image }}",
               "targetAzureRegion": "${{ replace(parameters.azureRegion, '*', '') }}",
               "token": "$(System.AccessToken)",
-              "taskId": "$(System.TaskInstanceId)",
               "taskUrl": "$(System.CollectionUri)$(System.TeamProject)?buildId=$(Build.BuildId)&jobId=$(System.JobId)&planId=$(System.PlanId)&taskId=$(System.TaskInstanceId)&timelineId=$(System.TimelineId)"
             }
           }
