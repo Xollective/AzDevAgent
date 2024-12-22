@@ -34,14 +34,12 @@ jobs:
           Write-Host Env eval ${{ env[inputs.sharedVarName] }}
           Write-Host Env eval ${{ env.jobindexvar }}
           Write-Host Env SHARED_VAR=$Env:SHARED_VAR
-          if (${{ inputs.jobIndex }} -ge ${{ inputs.jobCount }}) {
-            gh api `
-              --method PATCH `
-              -H "Accept: application/vnd.github+json" `
-              -H "X-GitHub-Api-Version: 2022-11-28" `
-              "/repos/$Env:OWNER/$Env:REPO/environments/${{ inputs.envName }}/variables" `
-              -f "name=${{ inputs.sharedVarName }}" -f "value=${{ inputs.jobIndex }}"
-          }
+          gh api `
+            --method PATCH `
+            -H "Accept: application/vnd.github+json" `
+            -H "X-GitHub-Api-Version: 2022-11-28" `
+            "/repos/$Env:OWNER/$Env:REPO/environments/${{ inputs.envName }}/variables" `
+            -f "name=${{ inputs.sharedVarName }}" -f "value=${{ inputs.jobIndex }}"
 
       - name: "Run Agent"
         shell: pwsh
