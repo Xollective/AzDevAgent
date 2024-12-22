@@ -17,9 +17,13 @@ env: ${{ fromJson(inputs.env) }}
 jobs:
   run:
     if: ${{ inputs.jobIndex < inputs.jobCount }}
+    outputs:
+      stopjobthread: ${{ steps.runstep.output.stobjobthread }}
     runs-on: ubuntu-latest
     steps:
-      - name: "Reserve and Run Agent"
+      - id: runstep
+        name: "Reserve and Run Agent"
         shell: pwsh
         run: |
           echo "stobjobthread=true" >> $Env:GITHUB_OUTPUT
+    
