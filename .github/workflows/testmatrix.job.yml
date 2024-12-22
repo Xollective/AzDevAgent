@@ -8,14 +8,6 @@ on:
         description: "Input environment."
         type: string
         default: '{}'
-      needs:
-        description: "Needs value."
-        type: string
-        default: '{}'
-      jobCount:
-        description: "The requesting pipeline build number."
-        required: true
-        type: number
 
 env: ${{ fromJson(inputs.env) }}
 

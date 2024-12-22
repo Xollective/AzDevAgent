@@ -1,10 +1,6 @@
 on:
   workflow_call:
     inputs:
-      jobCount:
-        description: "List of comma separated integer ids for the runners."
-        required: true
-        type: number
       jobIndex:
         description: "The requesting pipeline build number."
         required: true
@@ -24,18 +20,15 @@ jobs:
     uses: ./.github/workflows/testmatrix.job.yml
     with:
       env: ${{ inputs.env }}
-      jobCount: ${{ fromJSON(inputs.jobCount) }}
   job1:
     needs: job0
     if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
     uses: ./.github/workflows/testmatrix.job.yml
     with:
       env: ${{ inputs.env }}
-      jobCount: ${{ fromJSON(inputs.jobCount) }}
   job2:
     needs: job1
     if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
     uses: ./.github/workflows/testmatrix.job.yml
     with:
       env: ${{ inputs.env }}
-      jobCount: ${{ fromJSON(inputs.jobCount) }}

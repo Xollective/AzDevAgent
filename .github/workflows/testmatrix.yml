@@ -27,5 +27,4 @@ jobs:
     with:
       env: ${{ toJSON(inputs) }}
       parallelism: ${{ fromJSON(inputs.parallelism) }}
-      jobCount: ${{ fromJSON(inputs.jobCount) }}
       jobIndex: ${{ strategy.job-index }}
