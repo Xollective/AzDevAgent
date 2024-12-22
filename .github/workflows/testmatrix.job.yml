@@ -35,7 +35,7 @@ jobs:
           Write-Host Env eval ${{ env.jobindexvar }}
           Write-Host Env SHARED_VAR=$Env:SHARED_VAR
           gh api `
-            --method PATCH `
+            --method POST `
             -H "Accept: application/vnd.github+json" `
             -H "X-GitHub-Api-Version: 2022-11-28" `
             "/repos/$Env:OWNER/$Env:REPO/environments/${{ inputs.envName }}/variables" `
