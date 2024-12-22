@@ -28,7 +28,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.event.repository.name }}
           OWNER: ${{ github.repository_owner }}
-          SHARED_VAR: ${{ github.repository_owner }}
+          SHARED_VAR: ${{ env[inputs.sharedVarName] }}
         run: |
           Write-Host ${{ inputs.jobIndex }}
           Write-Host Env eval ${{ env[inputs.sharedVarName] }}
