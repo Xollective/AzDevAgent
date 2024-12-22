@@ -22,7 +22,6 @@ jobs:
       jobCount: ${{ fromJSON(inputs.jobCount) }}
   job1:
     needs: job0
-    uses: ./.github/workflows/testmatrix.job.yml
     if: ${{ contains(needs.*.outputs.stopjobthread, 'true') }}
     uses: ./.github/workflows/testmatrix.job.yml
     with:
