@@ -49,7 +49,7 @@ jobs:
         name: ${{ parameters.pool }}
         demands:
         - Capability.TaskId -equals $(StartAgentsTaskId)
-        - ${{ if ne(parameters.azureRegion) }}:
+        - ${{ if ne(parameters.azureRegion, '*') }}:
           - AzureRegion -equals ${{ parameters.azureRegion }}
       steps: 
         - ${{ job.steps }}
