@@ -32,5 +32,5 @@ jobs:
           NEEDS: ${{ inputs.needs }}
         run: |
           echo "hasmorejobs=false" >> $Env:GITHUB_OUTPUT
-          GetChildItem Env:
+          Get-ChildItem Env:
     
