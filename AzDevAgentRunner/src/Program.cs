@@ -41,11 +41,11 @@ public class Program
                 new Command("runagent", "Run command until it completes or build finishes. Also completes agent invocation task."),
                 m =>
                 {
-                    var result = new RunOperation(agentRunner)
+                    var result = new RunOperation(m.Console, cts, agentRunner)
                     {
-                        AdoBuildUri = m.Option(c => ref c.AdoBuildUri, name: "uri", required: true,
-                            description: "annotated build uri (e.g. $(System.CollectionUri)$(System.TeamProject)?buildId=$(Build.BuildId)&jobId=$(System.JobId)&planId=$(System.PlanId)&taskId=$(System.TaskInstanceId)&timelineId=$(System.TimelineId) )"),
-                        AdoToken = m.Option(c => ref c.AdoToken, name: "pat", description: "The access token (e.g. $(System.AccessToken) )", required: true),
+                        TaskUrl = m.Option(c => ref c.TaskUrl, name: "taskUrl", required: true,
+                            description: "annotated build task uri (e.g. $(System.CollectionUri)$(System.TeamProject)?buildId=$(Build.BuildId)&jobId=$(System.JobId)&planId=$(System.PlanId)&taskId=$(System.TaskInstanceId)&timelineId=$(System.TimelineId) )"),
+                        AdoToken = m.Option(c => ref c.AdoToken, name: "token", description: "The access token (e.g. $(System.AccessToken) )", required: true),
                     };
 
                     m.Option(c => ref c.PollSeconds, name: "pollSeconds");
@@ -53,7 +53,7 @@ public class Program
 
                     return result;
                 },
-                r => r.RunAsync(cts)),
+                r => r.RunAsync()),
 
             CliModel.Bind<ReserveOperation>(
                 new Command("reserve", "Reserve a slot for a github runner Azure Devops agent"),
@@ -61,13 +61,13 @@ public class Program
                 {
                     var result = new ReserveOperation(m.Console)
                     {
-                        AdoBuildUri = m.Option(c => ref c.AdoBuildUri, name: "uri", required: true,
-                            description: "annotated build uri (e.g. $(System.CollectionUri)$(System.TeamProject)?buildId=$(Build.BuildId)&jobId=$(System.JobId)&planId=$(System.PlanId)&taskId=$(System.TaskInstanceId)&timelineId=$(System.TimelineId) )"),
-                        AdoToken = m.Option(c => ref c.AdoToken, name: "pat", description: "The access token (e.g. $(System.AccessToken) )", required: true),
-                        AgentName = m.Option(c => ref c.AgentName, name: "agentName", description: "The name of the agent", required: false),
-                        SlotCount = m.Option(c => ref c.SlotCount, name: "slotCount", description: "The number of slots available for reservation", required: true),
+                        TaskUrl = m.Option(c => ref c.TaskUrl, name: "taskUrl", required: true,
+                            description: "annotated build task  uri (e.g. $(System.CollectionUri)$(System.TeamProject)?buildId=$(Build.BuildId)&jobId=$(System.JobId)&planId=$(System.PlanId)&taskId=$(System.TaskInstanceId)&timelineId=$(System.TimelineId) )"),
+                        AdoToken = m.Option(c => ref c.AdoToken, name: "token", description: "The access token (e.g. $(System.AccessToken) )", required: true),
+                        JobCount = m.Option(c => ref c.JobCount, name: "jobCount", description: "The number of job slots available for reservation", required: true),
                     };
 
+                    m.Option(c => ref c.AgentName, name: "agentName", description: "The name of the agent");
                     m.Option(c => ref c.PollSeconds, name: "pollSeconds");
 
                     return result;

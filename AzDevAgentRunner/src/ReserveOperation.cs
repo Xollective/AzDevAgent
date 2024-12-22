@@ -9,34 +9,20 @@ using TimelineRecord = Microsoft.TeamFoundation.DistributedTask.WebApi.TimelineR
 
 namespace AzDevAgentRunner;
 
-public class ReserveOperation(IConsole Console)
+public class ReserveOperation(IConsole Console) : TaskOperationBase(Console)
 {
-    public required string AdoBuildUri;
-    public required string AdoToken;
-    public string AgentName = "unknown";
-    public required int SlotCount;
-
-    public double PollSeconds = 1;
-
-    public bool Verbose = false;
+    public string? AgentName;
+    public required int JobCount;
 
     public string ReservationPrefix = $"****reservations:";
 
-    public async Task<int> RunAsync()
+    protected override async Task<int> RunCoreAsync()
     {
         try
         {
-            var adoBuildUri = BuildUri.ParseBuildUri(AdoBuildUri);
-            var taskInfo = adoBuildUri.DeserializeFromParameters<TaskInfo>();
+            var props = await GetBuildProperties();
 
-            var connection = new VssConnection(adoBuildUri.OrganizationUri, new VssBasicCredential(AdoToken, string.Empty));
-            var client = connection.GetClient<BuildHttpClient>();
-            var taskClient = connection.GetClient<TaskHttpClient>();
-            var agentClient = connection.GetClient<TaskAgentHttpClient>();
-
-            var build = await client.GetBuildAsync(adoBuildUri.Project, adoBuildUri.BuildId);
-
-            if (build.Result is BuildResult result && result != BuildResult.None)
+            if (IsCompleted(build) || props.ContainsKey(taskInfo.AllJobsReservedKey()))
             {
                 // Build is completed, can't reserve
                 return -100001;
@@ -56,7 +42,7 @@ public class ReserveOperation(IConsole Console)
 
             var record = updatedRecord[0];
 
-            var entry = new ReservationEntry(AgentName, Guid.NewGuid());
+            var entry = new ReservationEntry(AgentName ?? Environment.MachineName, Guid.NewGuid());
 
             await taskClient.AppendLogContentAsync(
                 scopeIdentifier: build.Project.Id,
@@ -104,7 +90,34 @@ public class ReserveOperation(IConsole Console)
 
             Console.WriteLine($"AgentName: '{AgentName}', Reservations: {reservations.Count}, ReservationIndex: {reservationIndex}{verboseOutput}");
 
-            return reservationIndex < SlotCount ? reservationIndex : -reservationIndex;
+            bool isReserved = reservationIndex < JobCount;
+            bool isLast = reservationIndex == (JobCount - 1);
+            bool hasMoreJobs = !isLast && isReserved;
+
+            if (isLast)
+            {
+                await SetBuildProperties(
+                    new()
+                    {
+                        [taskInfo.AllJobsReservedKey()] = "1"
+                    });
+            }
+
+            AppendLinesToEnvFile(FileEnvVar.GITHUB_OUTPUT, 
+                $"isReserved={isReserved}",
+                $"hasMoreJobs={hasMoreJobs}");
+
+            if (isReserved)
+            {
+                AppendLinesToEnvFile(FileEnvVar.GITHUB_ENV,
+                    $"Capability.TaskId={taskInfo.TaskId}",
+                    $"AZP_URL={adoBuildUri.OrganizationUri}",
+                    $"AZP_TOKEN={AdoToken}",
+                    $"AZP_JOB_INDEX={reservationIndex}",
+                    $"AZP_AGENT_NAME=ghagent-{adoBuildUri.BuildId}-m{reservationIndex}-t{taskInfo.TaskId.ToString().Substring(0, 8)}");
+            }
+
+            return isReserved ? reservationIndex : -reservationIndex;
         }
         catch
         {

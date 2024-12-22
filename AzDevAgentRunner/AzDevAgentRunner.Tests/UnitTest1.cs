@@ -56,10 +56,10 @@ public class UnitTest1
             {
                 var reserveCommand = new ReserveOperation(new SystemConsole())
                 {
-                    AdoBuildUri = data.builduri,
+                    TaskUrl = data.builduri,
                     AdoToken = data.authtoken,
                     AgentName = index.ToString(),
-                    SlotCount = 5,
+                    JobCount = 5,
                     ReservationPrefix = prefix,
                     Verbose = true
                 };

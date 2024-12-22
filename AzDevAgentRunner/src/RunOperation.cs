@@ -1,4 +1,5 @@
-﻿using Microsoft.TeamFoundation.Build.WebApi;
+﻿using System.CommandLine;
+using Microsoft.TeamFoundation.Build.WebApi;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
@@ -7,17 +8,13 @@ using TimelineRecord = Microsoft.TeamFoundation.DistributedTask.WebApi.TimelineR
 
 namespace AzDevAgentRunner;
 
-public class RunOperation(SubProcessRunner? agentRunner = null)
+public class RunOperation(IConsole Console, CancellationTokenSource agentCancellation, SubProcessRunner? agentRunner = null) : TaskOperationBase(Console)
 {
-    public required string AdoBuildUri;
-    public required string AdoToken;
-
-    public double PollSeconds = 2;
     public double AgentTimeoutSeconds = 30;
 
     public const string IsMarkedKey = "Marked";
 
-    public async Task<int> RunAsync(CancellationTokenSource agentCancellation)
+    protected override async Task<int> RunCoreAsync()
     {
         var runTask = default(ValueTask<int>?);
         runTask = agentRunner?.RunAsync();
@@ -27,24 +24,13 @@ public class RunOperation(SubProcessRunner? agentRunner = null)
             agentCancellation.Cancel();
         });
 
-        await RunAsyncCore(agentCancellation);
+        await RunHelperAsync(agentCancellation);
 
         return await runTask.GetValueOrDefault();
     }
 
-    private async Task RunAsyncCore(CancellationTokenSource agentCancellation)
+    private async Task RunHelperAsync(CancellationTokenSource agentCancellation)
     {
-        var token = agentCancellation.Token;
-        var adoBuildUri = BuildUri.ParseBuildUri(AdoBuildUri);
-        var taskInfo = adoBuildUri.DeserializeFromParameters<TaskInfo>();
-
-        var connection = new VssConnection(adoBuildUri.OrganizationUri, new VssBasicCredential(AdoToken, string.Empty));
-        var client = connection.GetClient<BuildHttpClient>();
-        var taskClient = connection.GetClient<TaskHttpClient>();
-        var agentClient = connection.GetClient<TaskAgentHttpClient>();
-
-        var build = await client.GetBuildAsync(adoBuildUri.Project, adoBuildUri.BuildId);
-
         var records = await taskClient.UpdateTimelineRecordsAsync(
             scopeIdentifier: build.Project.Id,
             planType: taskInfo.HubName,
@@ -95,6 +81,12 @@ public class RunOperation(SubProcessRunner? agentRunner = null)
                 build = await client.GetBuildAsync(adoBuildUri.Project, adoBuildUri.BuildId);
             }
 
+            if (!IsCompleted(build) && !(await GetBuildProperties()).ContainsKey(taskInfo.AllJobsReservedKey()))
+            {
+                AppendLinesToEnvFile(FileEnvVar.GITHUB_OUTPUT,
+                    $"hasMoreJobs=true");
+            }
+
             agentCancellation.CancelAfter(TimeSpan.FromSeconds(AgentTimeoutSeconds));
         }
         catch (Exception ex)
@@ -104,11 +96,5 @@ public class RunOperation(SubProcessRunner? agentRunner = null)
                 await setTaskResult(TaskResult.Canceled);
             }
         }
-    }
-
-    private bool IsCompleted(Build build)
-    {
-        var result = build.Result;
-        return result != null && result != BuildResult.None;
     }
 }
