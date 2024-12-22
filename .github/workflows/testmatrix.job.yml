@@ -30,7 +30,7 @@ jobs:
         shell: pwsh
         run: |
           $needs = @'
-            ${{ inputs.needs }}
+            ${{ env.parallelism }}
           '@
           echo "needs=$needs"
           echo "hasmorejobs=false" >> $Env:GITHUB_OUTPUT
