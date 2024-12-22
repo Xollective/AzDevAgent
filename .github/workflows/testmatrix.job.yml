@@ -30,7 +30,6 @@ jobs:
         shell: pwsh
         run: |
           $needs = @'
-            $Env:parallelism
             ${{ env.parallelism }}
           '@
           echo "needs=$needs"
