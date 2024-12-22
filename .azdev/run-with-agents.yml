@@ -8,6 +8,7 @@ parameters:
 - name: pool
   displayName: Target Pool
   type: string
+  default: '$(GithubHostedAgentPool)'
 - name: azureRegion
   type: string
   default: '*'
