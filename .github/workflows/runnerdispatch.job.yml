@@ -23,7 +23,7 @@ jobs:
         shell: pwsh
         env:
           AZP_URL: ${{ secrets.AZP_URL }}
-          AZP_TASK_URL: ${{ inputs.taskUrl }}
+          AZP_TASK_URL: ${{ env.taskUrl }}
           AZP_AGENT_NAME: "${{ inputs.agentName != '' && inputs.agentName || inputs.taskId }}--${{ matrix.runnerId }}"
           AZP_POOL: ${{ env.pool }}
           # AZP_WORK: "C:/azdev/agent"
@@ -31,6 +31,6 @@ jobs:
           Capability.Image: ${{ env.image }}
         run: |
           Get-ChildItem Env:
-          $Env:AZP_TOKEN = "${{ inputs.token != '' && inputs.token || secrets.AZP_TOKEN }}"
-          ./startup.ps1
+          # $Env:AZP_TOKEN = "${{ inputs.token != '' && inputs.token || secrets.AZP_TOKEN }}"
+          # ./startup.ps1
     

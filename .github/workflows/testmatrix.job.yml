@@ -19,6 +19,9 @@ jobs:
     steps:
       - id: runstep
         name: "Reserve and Run Agent"
+        env:
+          AZP_URL: ${{ secrets.AZP_URL }}
+          Capability_Image: ${{ env.image }}
         shell: pwsh
         run: |
           $needs = @'

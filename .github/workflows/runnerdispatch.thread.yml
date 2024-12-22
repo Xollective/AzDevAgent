@@ -25,11 +25,13 @@ jobs:
     needs: job0
     if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
     uses: ./.github/workflows/testmatrix.job.yml
+    secrets: inherit
     with:
       env: ${{ inputs.env }}
   job2:
     needs: job1
     if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
     uses: ./.github/workflows/testmatrix.job.yml
+    secrets: inherit
     with:
       env: ${{ inputs.env }}
