@@ -10,9 +10,9 @@ parameters:
   type: string
 - name: azureRegion
   type: string
-  default: ' '
+  default: '*'
   values:
-  - ' '
+  - '*'
   - westus
   - eastus
   - northcentralus
@@ -28,6 +28,7 @@ jobs:
 - ${{ if ne(length(parameters.jobs), 0) }}:
   - template: run-with-agents.invoke.yml
     parameters:
+      azureRegion: ${{ parameters.azureregion }}
       image: ${{ parameters.image }}
       workers: ${{ length(parameters.jobs) }}
       pool: ${{ parameters.pool }}
