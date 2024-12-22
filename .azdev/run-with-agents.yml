@@ -5,6 +5,9 @@ parameters:
   values:
   - 'windows-latest'
   - 'ubuntu-latest'
+- name: parallelism
+  type: number
+  default: 0
 - name: pool
   displayName: Target Pool
   type: string
@@ -29,6 +32,10 @@ jobs:
 - ${{ if ne(length(parameters.jobs), 0) }}:
   - template: run-with-agents.invoke.yml
     parameters:
+      ${{ if ne(parameters.parallelism, 0) }}:
+        parallelism: ${{ parameters.parallelism }}
+      ${{ else }}:
+        parallelism: ${{ length(parameters.jobs) }}
       azureRegion: ${{ parameters.azureregion }}
       image: ${{ parameters.image }}
       workers: ${{ length(parameters.jobs) }}
