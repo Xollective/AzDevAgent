@@ -14,16 +14,28 @@ on:
         required: true
         default: 2
         type: number
+      env:
+        description: "Input environment."
+        type: string
+        default: '{}'
 jobs:
   job0:
     if: ${{ inputs.jobIndex < inputs.parallelism }}
     uses: ./.github/workflows/testmatrix.job.yml
     with:
+      env: ${{ inputs.env }}
       jobCount: ${{ fromJSON(inputs.jobCount) }}
   job1:
     needs: job0
-    # if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
+    if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
     uses: ./.github/workflows/testmatrix.job.yml
     with:
+      env: ${{ inputs.env }}
       jobCount: ${{ fromJSON(inputs.jobCount) }}
-      needs: ${{ toJSON(needs.*.outputs.hasmorejobs) }}
+  job2:
+    needs: job1
+    if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
+    uses: ./.github/workflows/testmatrix.job.yml
+    with:
+      env: ${{ inputs.env }}
+      jobCount: ${{ fromJSON(inputs.jobCount) }}
