@@ -39,8 +39,8 @@ jobs:
             "ref": "main",
             "inputs": {
               "buildNumber": "$(Build.DefinitionName) - $(Build.BuildNumber) - $(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)",
-              "jobCount": "${{ parameters.workers }}",
-              "parallelism": "${{ parameters.parallelism }}",
+              "jobCount": ${{ parameters.workers }},
+              "parallelism": ${{ parameters.parallelism }},
               "pool": "${{ parameters.pool }}",
               "image": "${{ parameters.image }}",
               "targetAzureRegion": "${{ replace(parameters.azureRegion, '*', '') }}",
