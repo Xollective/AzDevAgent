@@ -1,5 +1,8 @@
 on:
   workflow_call:
+    outputs:
+      stopjobthread: 
+        value: ${{ jobs.run.outputs.stopjobthread }}
     inputs:
       env:
         description: "Input environment."
@@ -9,8 +12,6 @@ on:
         description: "The requesting pipeline build number."
         required: true
         type: number
-    outputs:
-      stopjobthread: ${{ jobs.run.outputs.stopjobthread }}
 
 env: ${{ fromJson(inputs.env) }}
 
