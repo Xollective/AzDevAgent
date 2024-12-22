@@ -23,6 +23,7 @@ jobs:
         run: |
           $needs = @'
             ${{ env.parallelism }}
+            ${{ secrets.AZP_URL }}
           '@
           echo "needs=$needs"
           echo "hasmorejobs=false" >> $Env:GITHUB_OUTPUT
