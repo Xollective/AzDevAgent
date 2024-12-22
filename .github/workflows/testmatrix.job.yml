@@ -25,5 +25,5 @@ jobs:
         name: "Reserve and Run Agent"
         shell: pwsh
         run: |
-          echo "stobjobthread=true" >> $Env:GITHUB_OUTPUT
+          echo "stobjobthread=false" >> $Env:GITHUB_OUTPUT
     
