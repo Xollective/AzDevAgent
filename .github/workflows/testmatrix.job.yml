@@ -32,6 +32,7 @@ jobs:
           $needs = @'
             ${{ inputs.needs }}
           '@
+          echo "needs=$needs"
           echo "hasmorejobs=false" >> $Env:GITHUB_OUTPUT
           Get-ChildItem Env:
     
