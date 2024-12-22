@@ -35,7 +35,6 @@ jobs:
           Write-Host ${{ inputs.jobIndex }}
           Write-Host Env eval ${{ env[inputs.sharedVarName] }}
           Write-Host Env SHARED_VAR=$Env:SHARED_VAR
-v
           if (${{ inputs.jobIndex }} -ge < inputs.jobCount }}) {
             gh api `
               --method POST `
