@@ -22,7 +22,7 @@ jobs:
       jobCount: ${{ fromJSON(inputs.jobCount) }}
   job1:
     needs: job0
-    if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
+    # if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
     uses: ./.github/workflows/testmatrix.job.yml
     with:
       jobCount: ${{ fromJSON(inputs.jobCount) }}
