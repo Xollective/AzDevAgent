@@ -14,9 +14,6 @@ on:
         default: 2
         type: number
 jobs:
-  setup:
-
-
   build:
     strategy:
       max-parallel: ${{ fromJSON(inputs.parallelism) }}
