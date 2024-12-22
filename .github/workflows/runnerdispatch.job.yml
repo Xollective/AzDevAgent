@@ -1,0 +1,36 @@
+on:
+  workflow_call:
+    outputs:
+      hasmorejobs: 
+        value: ${{ jobs.run.outputs.hasmorejobs }}
+    inputs:
+      env:
+        description: "Input environment."
+        type: string
+        default: '{}'
+
+env: ${{ fromJson(inputs.env) }}
+
+jobs:
+  run:
+    outputs:
+      hasmorejobs: ${{ steps.runstep.outputs.hasmorejobs }}
+    runs-on: ${{ fromJSON(inputs.env).image }}
+    steps:
+      - name: "Checkout repository"
+        uses: "actions/checkout@v2"
+      - name: "Run Agent"
+        shell: pwsh
+        env:
+          AZP_URL: ${{ secrets.AZP_URL }}
+          AZP_TASK_URL: ${{ inputs.taskUrl }}
+          AZP_AGENT_NAME: "${{ inputs.agentName != '' && inputs.agentName || inputs.taskId }}--${{ matrix.runnerId }}"
+          AZP_POOL: ${{ env.pool }}
+          # AZP_WORK: "C:/azdev/agent"
+          Capability.TaskId: ${{ env.taskId }}
+          Capability.Image: ${{ env.image }}
+        run: |
+          Get-ChildItem Env:
+          $Env:AZP_TOKEN = "${{ inputs.token != '' && inputs.token || secrets.AZP_TOKEN }}"
+          ./startup.ps1
+    
