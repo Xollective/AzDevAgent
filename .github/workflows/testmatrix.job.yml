@@ -22,7 +22,7 @@ env: ${{ fromJson(inputs.env) }}
 jobs:
   run:
     outputs:
-      hasmorejobs: ${{ toJSON(steps.runstep.output.hasmorejobs) }}
+      hasmorejobs: ${{ steps.runstep.outputs.hasmorejobs }}
     runs-on: ubuntu-latest
     steps:
       - id: runstep
