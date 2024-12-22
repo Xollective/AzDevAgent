@@ -26,4 +26,4 @@ jobs:
     uses: ./.github/workflows/testmatrix.job.yml
     with:
       jobCount: ${{ fromJSON(inputs.jobCount) }}
-      needs: toJSON(needs)
+      needs: $ {{ toJSON(needs) }}
