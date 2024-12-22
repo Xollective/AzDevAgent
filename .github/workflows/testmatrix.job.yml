@@ -23,7 +23,7 @@ jobs:
   run:
     outputs:
       hasmorejobs: ${{ steps.runstep.outputs.hasmorejobs }}
-    runs-on: ${{ env.image }}
+    runs-on: ${{ fromJSON(inputs.env).image }}
     steps:
       - id: runstep
         name: "Reserve and Run Agent"
