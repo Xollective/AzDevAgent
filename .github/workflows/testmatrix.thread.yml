@@ -18,6 +18,7 @@ jobs:
   job0:
     if: ${{ inputs.jobIndex < inputs.parallelism }}
     uses: ./.github/workflows/testmatrix.job.yml
+    secrets: inherit
     with:
       env: ${{ inputs.env }}
   job1:
