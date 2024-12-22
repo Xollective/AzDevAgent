@@ -20,6 +20,7 @@ on:
 jobs:
   build:
     # if: ${{ inputs.jobIndex < inputs.jobCount }}
+    permissions: write-all
     runs-on: ubuntu-latest
     steps:
       - name: Setup environment
