@@ -28,9 +28,10 @@ jobs:
       - id: runstep
         name: "Reserve and Run Agent"
         shell: pwsh
-        env:
-          NEEDS: ${{ inputs.needs }}
         run: |
+          $needs = @'
+            ${{ inputs.needs }}
+          '@
           echo "hasmorejobs=false" >> $Env:GITHUB_OUTPUT
           Get-ChildItem Env:
     
