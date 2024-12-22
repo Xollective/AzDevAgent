@@ -8,6 +8,10 @@ on:
         description: "Input environment."
         type: string
         default: '{}'
+      needs:
+        description: "Needs value."
+        type: string
+        default: '{}'
       jobCount:
         description: "The requesting pipeline build number."
         required: true
@@ -24,6 +28,9 @@ jobs:
       - id: runstep
         name: "Reserve and Run Agent"
         shell: pwsh
+        env:
+          NEEDS: ${{ input.needs }}
         run: |
           echo "hasmorejobs=false" >> $Env:GITHUB_OUTPUT
+          GetChildItem Env:
     
