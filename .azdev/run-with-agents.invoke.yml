@@ -47,3 +47,4 @@ jobs:
           }
         urlSuffix: '$(Agents_Request_Url)'
         waitForCompletion: 'true'
+        timeoutInMinutes: 5
