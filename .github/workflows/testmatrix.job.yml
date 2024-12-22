@@ -1,8 +1,8 @@
 on:
   workflow_call:
     outputs:
-      stopjobthread: 
-        value: ${{ jobs.run.outputs.stopjobthread }}
+      hasmorejobs: 
+        value: ${{ jobs.run.outputs.hasmorejobs }}
     inputs:
       env:
         description: "Input environment."
@@ -18,12 +18,12 @@ env: ${{ fromJson(inputs.env) }}
 jobs:
   run:
     outputs:
-      stopjobthread: ${{ steps.runstep.output.stobjobthread }}
+      hasmorejobs: ${{ steps.runstep.output.hasmorejobs }}
     runs-on: ubuntu-latest
     steps:
       - id: runstep
         name: "Reserve and Run Agent"
         shell: pwsh
         run: |
-          echo "stobjobthread=false" >> $Env:GITHUB_OUTPUT
+          echo "hasmorejobs=false" >> $Env:GITHUB_OUTPUT
     
