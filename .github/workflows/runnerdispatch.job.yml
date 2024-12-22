@@ -28,11 +28,12 @@ jobs:
 
           $Env:AzureRegion = $azureRegion
 
-          if ("${{ env.targetAzureRegion }}" -eq $azureRegion) {
-          
+          if ($Env:targetAzureRegion -and ($Env:targetAzureRegion -ne $azureRegion)) {
+            exit 0;
           }
 
           . dotnet tools/AzDevAgentRunner.exe reserve --taskUrl ${{ env.taskUrl }} --token ${{ env.token }} --jobCount ${{ env.jobCount }}
+          exit 0;
       - name: "Run Agent"
         id: run
         if: ${{ steps.setup.outputs.isReserved == 'true' }}
