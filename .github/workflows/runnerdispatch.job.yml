@@ -32,7 +32,7 @@ jobs:
             exit 0;
           }
 
-          . dotnet tools/AzDevAgentRunner.dll reserve --taskUrl "${{ env.taskUrl }}" --token "${{ env.token }}" --jobCount ${{ env.jobCount }}
+          . dotnet tools/AzDevAgentRunner.dll reserve --taskUrl "${{ env.taskUrl }}" --token "${{ env.token }}" --jobCount ${{ env.jobCount }} --debug
           exit 0;
       - name: "Run Agent (IsReserved=${{ steps.setup.outputs.isReserved }})"
         id: run
@@ -43,7 +43,7 @@ jobs:
           Capability.Image: ${{ env.image }}
         run: |
           if (-not $Env:AZP_URL) {
-            . dotnet tools/AzDevAgentRunner.dll reserve --taskUrl "${{ env.taskUrl }}" --token "${{ env.token }}" --jobCount ${{ env.jobCount }} --checkOnly
+            . dotnet tools/AzDevAgentRunner.dll reserve --taskUrl "${{ env.taskUrl }}" --token "${{ env.token }}" --jobCount ${{ env.jobCount }} --checkOnly --debug
             exit 0;
           }
 
