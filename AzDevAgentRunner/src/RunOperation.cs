@@ -2,6 +2,7 @@
 using Microsoft.TeamFoundation.Build.WebApi;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using Microsoft.VisualStudio.Services.Common;
+using Microsoft.VisualStudio.Services.TestManagement.TestPlanning.WebApi;
 using Microsoft.VisualStudio.Services.WebApi;
 using TaskResult = Microsoft.TeamFoundation.DistributedTask.WebApi.TaskResult;
 using TimelineRecord = Microsoft.TeamFoundation.DistributedTask.WebApi.TimelineRecord;
@@ -16,7 +17,9 @@ public class RunOperation(IConsole Console, CancellationTokenSource agentCancell
 
     protected override async Task<int> RunCoreAsync()
     {
+        Console.WriteLine($"Starting agent.");
         var runTask = agentRunner?.RunAsync();
+        Console.WriteLine($"Started agent.");
 
         runTask?.ContinueWith(t =>
         {
@@ -31,6 +34,8 @@ public class RunOperation(IConsole Console, CancellationTokenSource agentCancell
 
     private async Task RunHelperAsync(CancellationTokenSource agentCancellation)
     {
+        Console.WriteLine($"Started agent.");
+
         var records = await taskClient.UpdateTimelineRecordsAsync(
             scopeIdentifier: build.Project.Id,
             planType: taskInfo.HubName,
