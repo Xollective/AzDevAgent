@@ -26,7 +26,7 @@ parameters:
 jobs:
 - ${{ if ne(parameters.workers, 0) }}:
   - job: ${{ parameters.jobName }}
-    timeoutInMinutes: 5
+    timeoutInMinutes: 15
     pool: server
     steps:
     - task: InvokeRESTAPI@1
