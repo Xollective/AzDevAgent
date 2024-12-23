@@ -16,7 +16,7 @@ on:
       image:
         description: "The vm image to run the agent with."
         required: true
-        default: "windows-latest"
+        default: "ubuntu-latest"
 
 env:
   parallelism: ${{ fromJSON(inputs.parallelism) < fromJSON(inputs.jobCount) && fromJSON(inputs.parallelism) || fromJSON(inputs.jobCount)  }}
