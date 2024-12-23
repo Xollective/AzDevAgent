@@ -1,0 +1,18 @@
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: "Input environment."
+        type: string
+        default: 'echo hello'
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - id: runstep
+        name: "Reserve and Run Agent"
+        shell: pwsh
+        run: |
+          ${{ inputs.command }}
+    
