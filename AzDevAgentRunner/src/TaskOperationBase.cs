@@ -70,7 +70,7 @@ public abstract class TaskOperationBase(IConsole Console)
 
         if (Debug)
         {
-            Console.WriteLine($"Token:\n###{ToDebugString(AdoToken)}");
+            Console.WriteLine($"Token:\n{ToDebugString(AdoToken)}");
         }
     }
 

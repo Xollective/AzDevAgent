@@ -57,7 +57,7 @@ public class RunOperation(IConsole Console, CancellationTokenSource agentCancell
 
         async Task setTaskResult(TaskResult result)
         {
-            if (record.Result != null)
+            if (record.Result == null)
             {
                 Console.WriteLine($"Setting result to {result}");
                 await taskClient.RaisePlanEventAsync(
@@ -71,7 +71,7 @@ public class RunOperation(IConsole Console, CancellationTokenSource agentCancell
             }
             else
             {
-                Console.WriteLine($"Skipping due to exit result: {result}");
+                Console.WriteLine($"Skipping due to exit attempted result: {result}, actual result: {record.Result}");
             }
         }
 
