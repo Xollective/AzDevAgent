@@ -37,12 +37,26 @@ public abstract class TaskOperationBase(IConsole Console)
 
     protected abstract Task<int> RunCoreAsync();
 
+    public static string ToDebugString(string token)
+    {
+        var bytes = Encoding.UTF8.GetBytes(token);
+        return "###" + HexConverter.ToString(bytes);
+    }
+
+    public static string FromDebugString(string token)
+    {
+        if (token.StartsWith("###"))
+        {
+            var bytes = HexConverter.ToByteArray(token.Substring(3));
+            token = Encoding.UTF8.GetString(bytes);
+        }
+
+        return token;
+    }
+
     private async Task InitilializeAsync()
     {
-        if (AdoToken.StartsWith("###"))
-        {
-            AdoToken = Encoding.UTF8.GetString(HexConverter.ToByteArray(AdoToken, 3, AdoToken.Length - 3));
-        }
+        AdoToken = FromDebugString(AdoToken);
 
         adoBuildUri = BuildUri.ParseBuildUri(TaskUrl);
         taskInfo = adoBuildUri.DeserializeFromParameters<TaskInfo>();
@@ -56,7 +70,7 @@ public abstract class TaskOperationBase(IConsole Console)
 
         if (Debug)
         {
-            Console.WriteLine($"Token:\n###{HexConverter.ToString(Encoding.UTF8.GetBytes(AdoToken))}");
+            Console.WriteLine($"Token:\n###{ToDebugString(AdoToken)}");
         }
     }
 
