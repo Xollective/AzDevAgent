@@ -2,11 +2,18 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 
-public class Program
+public class Functions
 {
-    public static int Run(string workingDirectory, string suffix)
+    public static string GetEnvironmentVars(string pattern)
+    {
+        var regex = new Regex(pattern, RegexOptions.IgnoreCase);
+        return string.Join(",", Environment.GetEnvironmentVariables().Keys.OfType<string>().Where(name => regex.IsMatch(name)));
+    }
+
+    public static int RunWithRetry(string workingDirectory, string suffix)
     {
         Environment.CurrentDirectory = workingDirectory;
         Console.WriteLine(workingDirectory);

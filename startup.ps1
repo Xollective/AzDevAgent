@@ -23,8 +23,16 @@ if ((Test-Path Env:AZP_WORK) -and -not (Test-Path $Env:AZP_WORK)) {
   New-Item $Env:AZP_WORK -ItemType directory | Out-Null
 }
 
+$csharpFile = Join-Path $PSScriptRoot "Functions.cs"
+
+Add-Type -TypeDefinition (Get-Content -Raw -Path $csharpFile) -Language CSharp
+
+$excludedVars = [Functions]::GetEnvironmentVars("^((GITHUB_.+)|(AZP_*))");
+
+Write-Host "Excluded vars: $excludedVars"
+
 # Let the agent ignore the token env variables
-$Env:VSO_AGENT_IGNORE = "AZP_TOKEN,AZP_TOKEN_FILE,AZP_TASK_URL"
+$Env:VSO_AGENT_IGNORE = "AZP_TOKEN,AZP_TOKEN_FILE,AZP_TASK_URL,token,taskUrl,buildNumber,pool,targetAzureRegion,image,parallelism,$excludedVars"
 
 $azureRegion = Invoke-RestMethod -Headers @{"Metadata"="true"} -Uri "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-08-01&format=text"
 Write-Host "Azure Region: $azureRegion"
