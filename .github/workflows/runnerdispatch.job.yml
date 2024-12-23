@@ -34,7 +34,7 @@ jobs:
 
           . dotnet tools/AzDevAgentRunner.dll reserve --taskUrl "${{ env.taskUrl }}" --token "${{ env.token }}" --jobCount ${{ env.jobCount }}
           exit 0;
-      - name: "Run Agent"
+      - name: "Run Agent (IsReserved=${{ steps.setup.outputs.isReserved }})"
         id: run
         shell: pwsh
         env:
