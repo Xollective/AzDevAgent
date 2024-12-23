@@ -37,3 +37,45 @@ jobs:
     uses: ./.github/workflows/runnerdispatch.job.yml
     with:
       env: ${{ inputs.env }}
+  job3:
+    needs: job2
+    if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
+    uses: ./.github/workflows/runnerdispatch.job.yml
+    with:
+      env: ${{ inputs.env }}
+  job4:
+    needs: job3
+    if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
+    uses: ./.github/workflows/runnerdispatch.job.yml
+    with:
+      env: ${{ inputs.env }}
+  job5:
+    needs: job4
+    if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
+    uses: ./.github/workflows/runnerdispatch.job.yml
+    with:
+      env: ${{ inputs.env }}
+  job6:
+    needs: job5
+    if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
+    uses: ./.github/workflows/runnerdispatch.job.yml
+    with:
+      env: ${{ inputs.env }}
+  job7:
+    needs: job6
+    if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
+    uses: ./.github/workflows/runnerdispatch.job.yml
+    with:
+      env: ${{ inputs.env }}
+  job8:
+    needs: job7
+    if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
+    uses: ./.github/workflows/runnerdispatch.job.yml
+    with:
+      env: ${{ inputs.env }}
+  job9:
+    needs: job8
+    if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
+    uses: ./.github/workflows/runnerdispatch.job.yml
+    with:
+      env: ${{ inputs.env }}
