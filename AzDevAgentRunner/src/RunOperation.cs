@@ -84,7 +84,7 @@ public class RunOperation(IConsole Console, CancellationTokenSource agentCancell
             if (!IsCompleted(build) && !(await GetBuildProperties()).ContainsKey(taskInfo.AllJobsReservedKey()))
             {
                 AppendLinesToEnvFile(FileEnvVar.GITHUB_OUTPUT,
-                    $"hasMoreJobs=true");
+                    $"{OutputNames.hasMoreJobs}=true");
             }
 
             agentCancellation.CancelAfter(TimeSpan.FromSeconds(AgentTimeoutSeconds));

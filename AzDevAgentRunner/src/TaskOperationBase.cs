@@ -60,6 +60,11 @@ public abstract class TaskOperationBase(IConsole Console)
         GITHUB_ENV
     }
 
+    protected enum OutputNames
+    {
+        hasMoreJobs
+    }
+
     protected void AppendLinesToEnvFile(FileEnvVar file, params string[] lines)
     {
         Console.WriteLine($"Writing: {string.Join(Environment.NewLine, [file.ToString(), .. lines])}");

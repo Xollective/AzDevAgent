@@ -28,13 +28,19 @@ public class UnitTest1
     {
         var data = ReadData();
 
-        var runCommand = new RunOperation()
+        var runCommand = new RunOperation(new SystemConsole(), new CancellationTokenSource())
         {
-            AdoBuildUri = data.builduri,
+            TaskUrl = data.builduri,
             AdoToken = data.authtoken,
         };
 
-        return runCommand.RunAsync(new CancellationTokenSource());
+        return runCommand.RunAsync();
+    }
+
+    [Fact]
+    public async Task Args()
+    {
+        await Program.Main("reserve", "--checkOnly", "--token", "a", "--taskUrl", "b", "--jobCount", "1");
     }
 
     [Fact]

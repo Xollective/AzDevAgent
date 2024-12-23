@@ -6,7 +6,7 @@ namespace AzDevAgentRunner;
 
 public class Program
 {
-    public static async Task<int> Main(string[] args)
+    public static async Task<int> Main(params string[] args)
     {
         var precedingArgs = new List<string>();
         var remainingArgs = new List<string>();
@@ -69,6 +69,7 @@ public class Program
 
                     m.Option(c => ref c.AgentName, name: "agentName", description: "The name of the agent");
                     m.Option(c => ref c.PollSeconds, name: "pollSeconds");
+                    m.Option(c => ref c.CheckOnly, name: "checkOnly");
 
                     return result;
                 },

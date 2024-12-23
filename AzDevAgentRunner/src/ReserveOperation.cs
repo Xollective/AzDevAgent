@@ -13,6 +13,7 @@ public class ReserveOperation(IConsole Console) : TaskOperationBase(Console)
 {
     public string? AgentName;
     public required int JobCount;
+    public bool CheckOnly = false;
 
     public string ReservationPrefix = $"****reservations:";
 
@@ -26,6 +27,13 @@ public class ReserveOperation(IConsole Console) : TaskOperationBase(Console)
             {
                 // Build is completed, can't reserve
                 return -100001;
+            }
+            else if (CheckOnly)
+            {
+                AppendLinesToEnvFile(FileEnvVar.GITHUB_OUTPUT,
+                    $"{OutputNames.hasMoreJobs}=true");
+
+                return JobCount;
             }
 
             var updatedRecord = await taskClient.UpdateTimelineRecordsAsync(
@@ -105,7 +113,7 @@ public class ReserveOperation(IConsole Console) : TaskOperationBase(Console)
 
             AppendLinesToEnvFile(FileEnvVar.GITHUB_OUTPUT, 
                 $"isReserved={isReserved}",
-                $"hasMoreJobs={hasMoreJobs}");
+                $"{OutputNames.hasMoreJobs}={hasMoreJobs}");
 
             if (isReserved)
             {
