@@ -15,7 +15,27 @@ on:
         type: string
         default: '{}'
 jobs:
+  start:
+    strategy:
+      max-parallel: 1
+      matrix:
+        threadIndex: [0,1,2]
+    steps:
+    - id: runstep
+      name: "Reserve and Run Agent"
+      env:
+        AZP_URL: ${{ secrets.AZP_URL }}
+        Capability_Image: ${{ env.image }}
+      shell: pwsh
+      run: |
+        $needs = @'
+          ${{ toJSON(jobs) }}
+        '@
+        echo "needs=$needs"
+        echo "hasmorejobs=false" >> $Env:GITHUB_OUTPUT
+        Get-ChildItem Env:
   job0:
+    needs: start
     if: ${{ inputs.jobIndex < inputs.parallelism }}
     uses: ./.github/workflows/testmatrix.job.yml
     secrets: inherit
