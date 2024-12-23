@@ -4,7 +4,7 @@ namespace AzDevAgentRunner;
 
 public class SubProcessRunner(string executable, IEnumerable<string> args, CancellationToken token)
 {
-    public async ValueTask<int> RunAsync()
+    public async Task<int> RunAsync()
     {
         Console.WriteLine($"Executable: {executable}");
         Console.WriteLine($"Arguments: {string.Join(" ", args)}");

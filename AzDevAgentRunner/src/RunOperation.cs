@@ -16,17 +16,17 @@ public class RunOperation(IConsole Console, CancellationTokenSource agentCancell
 
     protected override async Task<int> RunCoreAsync()
     {
-        var runTask = default(ValueTask<int>?);
-        runTask = agentRunner?.RunAsync();
+        var runTask = agentRunner?.RunAsync();
 
-        runTask?.AsTask().ContinueWith(t =>
+        runTask?.ContinueWith(t =>
         {
             agentCancellation.Cancel();
         });
 
         await RunHelperAsync(agentCancellation);
 
-        return await runTask.GetValueOrDefault();
+        runTask ??= Task.FromResult(0);
+        return await runTask;
     }
 
     private async Task RunHelperAsync(CancellationTokenSource agentCancellation)

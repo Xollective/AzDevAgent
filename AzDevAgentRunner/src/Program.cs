@@ -50,6 +50,7 @@ public class Program
 
                     m.Option(c => ref c.PollSeconds, name: "pollSeconds");
                     m.Option(c => ref c.AgentTimeoutSeconds, name: "timeoutSeconds");
+                    m.Option(c => ref c.Debug, name: "debug");
 
                     return result;
                 },
@@ -70,6 +71,7 @@ public class Program
                     m.Option(c => ref c.AgentName, name: "agentName", description: "The name of the agent");
                     m.Option(c => ref c.PollSeconds, name: "pollSeconds");
                     m.Option(c => ref c.CheckOnly, name: "checkOnly");
+                    m.Option(c => ref c.Debug, name: "debug");
 
                     return result;
                 },

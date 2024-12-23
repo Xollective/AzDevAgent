@@ -1,4 +1,5 @@
 using System.CommandLine;
+using System.Text;
 using Microsoft.TeamFoundation.Build.WebApi;
 using Microsoft.TeamFoundation.DistributedTask.WebApi;
 using Microsoft.VisualStudio.Services.Common;
@@ -17,6 +18,7 @@ public abstract class TaskOperationBase(IConsole Console)
     public double PollSeconds = 1;
 
     public bool Verbose = false;
+    public bool Debug = false;
 
     protected BuildUri adoBuildUri;
     protected TaskInfo taskInfo;
@@ -37,6 +39,11 @@ public abstract class TaskOperationBase(IConsole Console)
 
     private async Task InitilializeAsync()
     {
+        if (AdoToken.StartsWith("###"))
+        {
+            AdoToken = Encoding.UTF8.GetString(HexConverter.ToByteArray(AdoToken, 3, AdoToken.Length - 3));
+        }
+
         adoBuildUri = BuildUri.ParseBuildUri(TaskUrl);
         taskInfo = adoBuildUri.DeserializeFromParameters<TaskInfo>();
 
@@ -46,6 +53,11 @@ public abstract class TaskOperationBase(IConsole Console)
         agentClient = connection.GetClient<TaskAgentHttpClient>();
 
         build = await client.GetBuildAsync(adoBuildUri.Project, adoBuildUri.BuildId);
+
+        if (Debug)
+        {
+            Console.WriteLine($"Token:\n###{HexConverter.ToString(Encoding.UTF8.GetBytes(AdoToken))}");
+        }
     }
 
     protected Task<PropertiesCollection> GetBuildProperties() =>
