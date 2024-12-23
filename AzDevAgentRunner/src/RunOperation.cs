@@ -34,7 +34,7 @@ public class RunOperation(IConsole Console, CancellationTokenSource agentCancell
 
     private async Task RunHelperAsync(CancellationTokenSource agentCancellation)
     {
-        Console.WriteLine($"Started agent.");
+        Console.WriteLine($"Setting TaskId variable to {taskInfo.TaskId}.");
 
         var records = await taskClient.UpdateTimelineRecordsAsync(
             scopeIdentifier: build.Project.Id,
