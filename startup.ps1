@@ -95,10 +95,8 @@ try
   $taskUrl = $Env:AZP_TASK_URL
 
   . dotnet $agentRunnerDll run `
-    --uri "$taskUrl" `
-    --runnerIds "$(${Env:AZP_RUNNER_IDS})" `
-    --runnerId "$(${Env:AZP_RUNNER_ID})" `
-    --pat "$pat" `
+    --taskUrl "$taskUrl" `
+    --token "$pat" `
     -- "run.$sfx" --once
 
   # $exitCode = [Program]::Run($PWD, $sfx)
@@ -106,6 +104,7 @@ try
   $exitCode = $LASTEXITCODE
 
   Write-Host "4. Finished running job (Exit code:$exitCode)" -ForegroundColor Cyan
+  exit 0;
 }
 finally
 {

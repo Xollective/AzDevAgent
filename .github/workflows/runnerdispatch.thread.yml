@@ -14,24 +14,26 @@ on:
         description: "Input environment."
         type: string
         default: '{}'
+    secrets:
+      token:
+        description: 'A token passed from the caller workflow'
+        required: true
+
 jobs:
   job0:
     if: ${{ inputs.jobIndex < inputs.parallelism }}
     uses: ./.github/workflows/runnerdispatch.job.yml
-    secrets: inherit
     with:
       env: ${{ inputs.env }}
   job1:
     needs: job0
     if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
     uses: ./.github/workflows/runnerdispatch.job.yml
-    secrets: inherit
     with:
       env: ${{ inputs.env }}
   job2:
     needs: job1
     if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
     uses: ./.github/workflows/runnerdispatch.job.yml
-    secrets: inherit
     with:
       env: ${{ inputs.env }}

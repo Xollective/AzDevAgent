@@ -7,6 +7,8 @@ parameters:
   - 'ubuntu-latest'
 - name: workers
   type: number
+- name: parallelism
+  type: number
 - name: pool
   displayName: Target Pool
   type: string
@@ -24,6 +26,7 @@ parameters:
 jobs:
 - ${{ if ne(parameters.workers, 0) }}:
   - job: ${{ parameters.jobName }}
+    timeoutInMinutes: 5
     pool: server
     steps:
     - task: InvokeRESTAPI@1
@@ -37,12 +40,12 @@ jobs:
             "ref": "main",
             "inputs": {
               "buildNumber": "$(Build.DefinitionName) - $(Build.BuildNumber) - $(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)",
-              "jobCount": "${{ parameters.jobCount }}",
+              "jobCount": "${{ parameters.workers }}",
+              "parallelism": "${{ parameters.parallelism }}",
               "pool": "${{ parameters.pool }}",
               "image": "${{ parameters.image }}",
-              "targetAzureRegion": "${{ replace(parameters.azureRegion, '*', '') }}"
+              "targetAzureRegion": "${{ replace(parameters.azureRegion, '*', '') }}",
               "token": "$(System.AccessToken)",
-              "taskId": "$(System.TaskInstanceId)",
               "taskUrl": "$(System.CollectionUri)$(System.TeamProject)?buildId=$(Build.BuildId)&jobId=$(System.JobId)&planId=$(System.PlanId)&taskId=$(System.TaskInstanceId)&timelineId=$(System.TimelineId)"
             }
           }

@@ -32,7 +32,7 @@ jobs:
             exit 0;
           }
 
-          . dotnet tools/AzDevAgentRunner.exe reserve --taskUrl ${{ env.taskUrl }} --token ${{ env.token }} --jobCount ${{ env.jobCount }}
+          . dotnet tools/AzDevAgentRunner.dll reserve --taskUrl "${{ env.taskUrl }}" --token "${{ env.token }}" --jobCount ${{ env.jobCount }}
           exit 0;
       - name: "Run Agent"
         id: run
