@@ -65,6 +65,8 @@ if ($IsLinux) {
   Expand-Archive -Path "agent.zip" -DestinationPath "/home/azp/agent"
 }
 
+$agentName = $env:AZP_AGENT_NAME
+
 try
 {
   $pat = $(Get-Content ${Env:AZP_TOKEN_FILE})
@@ -82,7 +84,7 @@ try
     --agent "$(if (Test-Path Env:AZP_AGENT_NAME) { ${Env:AZP_AGENT_NAME} } else { hostname })" `
     --url "$(${Env:AZP_URL})" `
     --auth PAT `
-    --token "$(Get-Content ${Env:AZP_TOKEN_FILE})" `
+    --token "$pat" `
     --pool "$(if (Test-Path Env:AZP_POOL) { ${Env:AZP_POOL} } else { 'Default' })" `
     --work "$(if (Test-Path Env:AZP_WORK) { ${Env:AZP_WORK} } else { '_work' })" `
     --replace
@@ -91,7 +93,7 @@ try
     --agent "$(if (Test-Path Env:AZP_AGENT_NAME) { ${Env:AZP_AGENT_NAME} } else { hostname })" `
     --url "$(${Env:AZP_URL})" `
     --auth PAT `
-    --token "$(Get-Content ${Env:AZP_TOKEN_FILE})" `
+    --token "$pat" `
     --pool "$(if (Test-Path Env:AZP_POOL) { ${Env:AZP_POOL} } else { 'Default' })" `
     --work "$(if (Test-Path Env:AZP_WORK) { ${Env:AZP_WORK} } else { '_work' })" `
     --replace
@@ -101,6 +103,9 @@ try
   $agentRunnerDll = Join-Path $PSScriptRoot "tools/AzDevAgentRunner.dll"
 
   $taskUrl = $Env:AZP_TASK_URL
+
+  # Clear environment variables before running
+  [Functions]::ClearEnvironmentVars($Env:VSO_AGENT_IGNORE);
 
   . dotnet $agentRunnerDll runagent `
     --taskUrl "$taskUrl" `
@@ -116,7 +121,6 @@ try
 }
 finally
 {
-  $agentName = $env:AZP_AGENT_NAME
   if ($agentName -ieq "Placeholder") {
       Write-Host "Skipping cleanup. This is a placeholder agent."
   } else {
@@ -124,6 +128,6 @@ finally
 
     ./config.cmd remove --unattended `
       --auth PAT `
-      --token "$(Get-Content ${Env:AZP_TOKEN_FILE})"
+      --token "$pat"
   }
 }
