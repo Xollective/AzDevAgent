@@ -36,13 +36,17 @@ jobs:
           exit 0;
       - name: "Run Agent"
         id: run
-        if: ${{ steps.setup.outputs.isReserved == 'true' }}
         shell: pwsh
         env:
           AZP_TASK_URL: ${{ env.taskUrl }}
           AZP_POOL: ${{ env.pool }}
           Capability.Image: ${{ env.image }}
         run: |
+          if (-not $Env:AZP_URL) {
+            . dotnet tools/AzDevAgentRunner.dll reserve --taskUrl "${{ env.taskUrl }}" --token "${{ env.token }}" --jobCount ${{ env.jobCount }} --checkOnly
+            exit 0;
+          }
+
           Get-ChildItem Env:
           # ./startup.ps1
     
