@@ -35,14 +35,17 @@ jobs:
       ${{ if ne(parameters.parallelism, 0) }}:
         parallelism: ${{ parameters.parallelism }}
       ${{ else }}:
-        parallelism: ${{ length(parameters.jobs) }}
+        parallelism: ${{ coalesce(parameters.jobs[0].strategy.parallel, length(parameters.jobs)) }}
       azureRegion: ${{ parameters.azureregion }}
       image: ${{ parameters.image }}
-      workers: ${{ length(parameters.jobs) }}
+      workers: ${{ coalesce(parameters.jobs[0].strategy.parallel, length(parameters.jobs)) }}
       pool: ${{ parameters.pool }}
       jobName: start_agents
   - ${{ each job in parameters.jobs }}:
     - job: ${{ job.job }}
+      ${{ if parameters.jobs[0].strategy.parallel }}:
+        strategy:
+          parallel: ${{ parameters.jobs[0].strategy.parallel }}
       variables:
       - name: StartAgentsTaskId
         value: $[dependencies.start_agents.outputs['start_agents.TaskId']] 
