@@ -22,7 +22,7 @@ on:
       parallelism:
         description: "The requesting pipeline build number."
         required: true
-        default: 1000
+        default: 0
         type: number
       pool:
         description: "The pool to add the agent."
@@ -47,7 +47,7 @@ on:
 jobs:
   stage:
     strategy:
-      max-parallel: ${{ fromJSON(inputs.parallelism) < fromJSON(inputs.jobCount) && fromJSON(inputs.parallelism) || fromJSON(inputs.jobCount)  }}
+      max-parallel: ${{ fromJSON(inputs.parallelism) > 0 && fromJSON(inputs.parallelism) || fromJSON(inputs.jobCount)  }}
       matrix:
         threadIndex: ${{ fromJSON(inputs.threadIds) }}
     uses: ./.github/workflows/runnerdispatch.thread.yml
