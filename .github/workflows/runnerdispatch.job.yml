@@ -48,5 +48,5 @@ jobs:
           }
 
           Get-ChildItem Env:
-          # ./startup.ps1
+          ./startup.ps1
     
