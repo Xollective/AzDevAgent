@@ -94,7 +94,7 @@ try
 
   $taskUrl = $Env:AZP_TASK_URL
 
-  . dotnet $agentRunnerDll run `
+  . dotnet $agentRunnerDll runagent `
     --taskUrl "$taskUrl" `
     --token "$pat" `
     -- "run.$sfx" --once
