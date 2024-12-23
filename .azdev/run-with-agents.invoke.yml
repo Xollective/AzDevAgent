@@ -31,7 +31,7 @@ jobs:
   - job: ${{ parameters.jobName }}
     timeoutInMinutes: 15
     variables:
-      ${{ ne(parameters.parallelism, 0) }}:
+      ${{ if ne(parameters.parallelism, 0) }}:
         ThreadIds: ${{ split(parameters.threadIds, format(',{0},', parameters.parallelism))[0] }}
       ${{ else }}:
         ThreadIds: ${{ parameters.threadIds }}
