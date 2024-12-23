@@ -25,7 +25,7 @@ env:
 jobs:
   stage:
     strategy:
-      max-parallel: ${{ fromJSON(env.parallelism) }}
+      max-parallel: ${{ fromJSON(inputs.parallelism) }}
       matrix:
         threadIndex: [0,1,2,3]
     uses: ./.github/workflows/testmatrix.thread.yml
