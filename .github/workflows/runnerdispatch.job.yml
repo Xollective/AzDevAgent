@@ -38,10 +38,10 @@ jobs:
           $Env:AzureRegion = $azureRegion
 
           $targetAzureRegion = $Env:targetAzureRegion
+          Out-File -FilePath $env:GITHUB_OUTPUT -Append -InputObject "azureRegion=$azureRegion"
 
           if ($Env:targetAzureRegion -and ($targetAzureRegion -ne $azureRegion)) {
             Write-Host "Azure Region ($azureRegion) != Target Azure Region ($targetAzureRegion)"
-            Out-File -FilePath $env:GITHUB_OUTPUT -Append -InputObject "azureRegion=$azureRegion"
             exit 0;
           }
 
