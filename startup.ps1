@@ -1,3 +1,13 @@
+if ($IsLinux) {
+  # Get the current user's UID
+  $currentUserId = (id -u)
+  if ($currentUserId -ne 0) {
+    Write-Host "Invoking currentUserId=$($currentUserId)"
+    sudo -E pwsh -File $($MyInvocation.MyCommand.Path)
+    return;
+  }
+}
+
 if (-not (Test-Path Env:AZP_URL)) {
   Write-Error "error: missing AZP_URL environment variable"
   exit 1
