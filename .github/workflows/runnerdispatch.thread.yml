@@ -31,55 +31,60 @@ jobs:
     uses: ./.github/workflows/runnerdispatch.job.yml
     with:
       env: ${{ inputs.env }}
-      message: ${{ toJSON(needs) }}
+      message: ${{ toJSON(contains(needs.*.outputs.hasmorejobs, 'true')) }}
   job2:
     needs: job1
     if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
     uses: ./.github/workflows/runnerdispatch.job.yml
     with:
       env: ${{ inputs.env }}
-      message: ${{ toJSON(needs) }}
+      message: ${{ toJSON(contains(needs.*.outputs.hasmorejobs, 'true')) }}
   job3:
     needs: job2
     if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
     uses: ./.github/workflows/runnerdispatch.job.yml
     with:
       env: ${{ inputs.env }}
-      message: ${{ toJSON(needs) }}
+      message: ${{ toJSON(contains(needs.*.outputs.hasmorejobs, 'true')) }}
   job4:
     needs: job3
     if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
     uses: ./.github/workflows/runnerdispatch.job.yml
     with:
       env: ${{ inputs.env }}
-      message: ${{ toJSON(needs) }}
+      message: ${{ toJSON(contains(needs.*.outputs.hasmorejobs, 'true')) }}
   job5:
     needs: job4
     if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
     uses: ./.github/workflows/runnerdispatch.job.yml
     with:
       env: ${{ inputs.env }}
+      message: ${{ toJSON(contains(needs.*.outputs.hasmorejobs, 'true')) }}
   job6:
     needs: job5
     if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
     uses: ./.github/workflows/runnerdispatch.job.yml
     with:
       env: ${{ inputs.env }}
+      message: ${{ toJSON(contains(needs.*.outputs.hasmorejobs, 'true')) }}
   job7:
     needs: job6
     if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
     uses: ./.github/workflows/runnerdispatch.job.yml
     with:
       env: ${{ inputs.env }}
+      message: ${{ toJSON(contains(needs.*.outputs.hasmorejobs, 'true')) }}
   job8:
     needs: job7
     if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
     uses: ./.github/workflows/runnerdispatch.job.yml
     with:
       env: ${{ inputs.env }}
+      message: ${{ toJSON(contains(needs.*.outputs.hasmorejobs, 'true')) }}
   job9:
     needs: job8
     if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
     uses: ./.github/workflows/runnerdispatch.job.yml
     with:
       env: ${{ inputs.env }}
+      message: ${{ toJSON(contains(needs.*.outputs.hasmorejobs, 'true')) }}
