@@ -1,11 +1,6 @@
 if ($IsLinux) {
-  # Get the current user's UID
-  $currentUserId = (id -u)
-  if ($currentUserId -ne 0) {
-    Write-Host "Invoking currentUserId=$($currentUserId)"
-    sudo -E pwsh -File $($MyInvocation.MyCommand.Path)
-    return;
-  }
+  sudo mkdir -p /home/azp
+  sudo chmod 777 /home/azp
 }
 
 if (-not (Test-Path Env:AZP_URL)) {
@@ -25,7 +20,7 @@ if (-not (Test-Path Env:AZP_TOKEN_FILE)) {
   $Env:AZP_TOKEN | Out-File -FilePath $Env:AZP_TOKEN_FILE
 }
 
-$Env:AZP_WORK = if($IsLinux) { [System.IO.Path]::GetFullPath('/home/azdev/agent') } else { "C:/home/azdev/agent" }
+$Env:AZP_WORK = if($IsLinux) { [System.IO.Path]::GetFullPath('/home/azp/work') } else { "C:/home/azp/work" }
 
 Remove-Item Env:AZP_TOKEN
 
