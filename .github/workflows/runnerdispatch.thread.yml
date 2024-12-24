@@ -21,7 +21,7 @@ on:
 
 jobs:
   job0:
-    if: ${{ inputs.jobIndex < inputs.parallelism }}
+    if: inputs.jobIndex < inputs.parallelism
     uses: ./.github/workflows/runnerdispatch.job.yml
     with:
       env: ${{ inputs.env }}
