@@ -71,6 +71,7 @@ if ($IsLinux) {
 }
 
 $agentName = $env:AZP_AGENT_NAME
+$sfx = if($IsLinux) { "sh" } else { "cmd" }
 
 try
 {
@@ -78,7 +79,6 @@ try
 
   Write-Host "3. Configuring Azure Pipelines agent..." -ForegroundColor Cyan
 
-  $sfx = if($IsLinux) { "sh" } else { "cmd" }
 
   if ($IsLinux) {
     chmod +x ./config.sh
@@ -102,6 +102,11 @@ try
     --pool "$(if (Test-Path Env:AZP_POOL) { ${Env:AZP_POOL} } else { 'Default' })" `
     --work "$(if (Test-Path Env:AZP_WORK) { ${Env:AZP_WORK} } else { '_work' })" `
     --replace
+
+  $exitCode = $LASTEXITCODE
+  if ($exitCode -ne 0) {
+    exit 0;
+  }
 
   Write-Host "4. Running Azure Pipelines agent..." -ForegroundColor Cyan
 
@@ -131,7 +136,7 @@ finally
   } else {
     Write-Host "Cleanup. Removing Azure Pipelines agent..." -ForegroundColor Cyan
 
-    ./config.cmd remove --unattended `
+    "./config.$sfx" remove --unattended `
       --auth PAT `
       --token "$pat"
   }
