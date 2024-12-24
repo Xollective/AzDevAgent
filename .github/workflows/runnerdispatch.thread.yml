@@ -31,24 +31,28 @@ jobs:
     uses: ./.github/workflows/runnerdispatch.job.yml
     with:
       env: ${{ inputs.env }}
+      message: ${{ toJSON(needs) }}
   job2:
     needs: job1
     if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
     uses: ./.github/workflows/runnerdispatch.job.yml
     with:
       env: ${{ inputs.env }}
+      message: ${{ toJSON(needs) }}
   job3:
     needs: job2
     if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
     uses: ./.github/workflows/runnerdispatch.job.yml
     with:
       env: ${{ inputs.env }}
+      message: ${{ toJSON(needs) }}
   job4:
     needs: job3
     if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}
     uses: ./.github/workflows/runnerdispatch.job.yml
     with:
       env: ${{ inputs.env }}
+      message: ${{ toJSON(needs) }}
   job5:
     needs: job4
     if: ${{ contains(needs.*.outputs.hasmorejobs, 'true') }}

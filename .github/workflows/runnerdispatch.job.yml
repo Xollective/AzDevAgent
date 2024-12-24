@@ -8,6 +8,10 @@ on:
         description: "Input environment."
         type: string
         default: '{}'
+      message:
+        description: "Message."
+        type: string
+        default: '{}'
 
 env: ${{ fromJson(inputs.env) }}
 
@@ -23,6 +27,11 @@ jobs:
         id: setup
         shell: pwsh
         run: |
+          $inputMessage = @'
+          ${{ inputs.message }}
+          '@
+          Write-Host "Message: $inputMessage"
+
           $azureRegion = Invoke-RestMethod -Headers @{"Metadata"="true"} -Uri "http://169.254.169.254/metadata/instance/compute/location?api-version=2017-08-01&format=text"
           Write-Host "Azure Region: $azureRegion"
 
