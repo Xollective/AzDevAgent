@@ -37,13 +37,20 @@ jobs:
 
           $Env:AzureRegion = $azureRegion
 
-          if ($Env:targetAzureRegion -and ($Env:targetAzureRegion -ne $azureRegion)) {
+          $targetAzureRegion = $Env:targetAzureRegion
+
+          if ($Env:targetAzureRegion -and ($targetAzureRegion -ne $azureRegion)) {
+            Write-Host "Azure Region ($azureRegion) != Target Azure Region ($targetAzureRegion)"
+            Out-File -FilePath $env:GITHUB_OUTPUT -Append -InputObject "azureRegion=$azureRegion"
             exit 0;
           }
 
+          Write-Host "Attempting to reserve job"
           . dotnet tools/AzDevAgentRunner.dll reserve --taskUrl "${{ env.taskUrl }}" --token "${{ env.token }}" --jobCount ${{ env.jobCount }}
+
+          Write-Host "Reservation result: $LASTEXITCODE"
           exit 0;
-      - name: "Run Agent (IsReserved=${{ steps.setup.outputs.isReserved }})"
+      - name: "Run Agent (Region=${{ steps.setup.outputs.azureRegion }}, IsReserved=${{ steps.setup.outputs.isReserved }})"
         id: run
         shell: pwsh
         env:
