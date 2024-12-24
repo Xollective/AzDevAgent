@@ -103,11 +103,6 @@ try
     --work "$(if (Test-Path Env:AZP_WORK) { ${Env:AZP_WORK} } else { '_work' })" `
     --replace
 
-  $exitCode = $LASTEXITCODE
-  if ($exitCode -ne 0) {
-    exit 0;
-  }
-
   Write-Host "4. Running Azure Pipelines agent..." -ForegroundColor Cyan
 
   $agentRunnerDll = Join-Path $PSScriptRoot "tools/AzDevAgentRunner.dll"
