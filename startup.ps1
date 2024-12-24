@@ -136,7 +136,7 @@ finally
   } else {
     Write-Host "Cleanup. Removing Azure Pipelines agent..." -ForegroundColor Cyan
 
-    "./config.$sfx" remove --unattended `
+    . "./config.$sfx" remove --unattended `
       --auth PAT `
       --token "$pat"
   }
