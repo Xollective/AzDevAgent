@@ -43,6 +43,8 @@ jobs:
       jobName: start_agents
   - ${{ each job in parameters.jobs }}:
     - job: ${{ job.job }}
+      ${{ if job.displayName }}:
+        displayName: ${{ job.displayName }}
       ${{ if parameters.jobs[0].strategy.parallel }}:
         strategy:
           parallel: ${{ parameters.jobs[0].strategy.parallel }}
