@@ -46,6 +46,8 @@ jobs:
         - ${{ each job in parameters.jobs }}:
           - ${{ if not(job.pool) }}:
             - ${{ job }}
+      ${{ else }}:
+        ${{ param.key }}: ${{ param.value }}
 
 - ${{ elseif ne(length(parameters.jobs), 0) }}:
   - template: run-with-agents.invoke.yml
