@@ -67,8 +67,6 @@ jobs:
         displayName: ${{ job.displayName }}
       ${{ if job.timeoutInMinutes }}:
         timeoutInMinutes: ${{ job.timeoutInMinutes }}
-      ${{ if job.timeoutInMinutes }}:
-        timeoutInMinutes: ${{ job.timeoutInMinutes }}
       ${{ if job.cancelTimeoutInMinutes }}:
         cancelTimeoutInMinutes: ${{ job.cancelTimeoutInMinutes }}
       ${{ if parameters.jobs[0].strategy.parallel }}:
