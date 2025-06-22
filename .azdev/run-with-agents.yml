@@ -41,7 +41,7 @@ jobs:
     ${{ each param in parameters }}:
       ${{ if eq(param.key, 'innerCall') }}:
         innerCall: true
-      ${{ elseif eq(param.key, 'jobs')) }}:
+      ${{ elseif eq(param.key, 'jobs') }}:
         jobs:
         - ${{ each job in parameters.jobs }}:
           - ${{ if not(job.pool) }}:
