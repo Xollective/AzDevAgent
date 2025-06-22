@@ -27,9 +27,27 @@ parameters:
     steps: 
     - script: |
         echo Default job
+- name: innerCall
+  type: boolean
+  default: false
 
 jobs:
-- ${{ if ne(length(parameters.jobs), 0) }}:
+- ${{ if not(parameters.innerCall) }}:
+  - ${{ each job in parameters.jobs }}:
+    - ${{ if job.pool }}:
+      - ${{ job }}
+  - template: run-with-agents.yml
+    parameters: 
+    ${{ each param in parameters }}:
+      ${{ if eq(param.key, 'innerCall') }}:
+        innerCall: true
+      ${{ elseif eq(param.key, 'jobs')) }}:
+        jobs:
+        - ${{ each job in parameters.jobs }}:
+          - ${{ if not(job.pool) }}:
+            - ${{ job }}
+
+- ${{ elseif ne(length(parameters.jobs), 0) }}:
   - template: run-with-agents.invoke.yml
     parameters:
       ${{ if ne(parameters.parallelism, 0) }}:
