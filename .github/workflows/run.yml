@@ -1,0 +1,29 @@
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: "Input environment."
+        type: string
+        default: 'echo hello'
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - id: runstep
+        name: "Reserve and Run Agent"
+        shell: pwsh
+        run: |
+          if ($IsLinux) {
+            # Get the current user's UID
+            $currentUserId = (id -u)
+            if (($Env:IsSudo -ne "1") -and ($currentUserId -ne 0)) {
+              Write-Host "Invoking IsSudo=$($Env:IsSudo)"
+              $Env:IsSudo="1"
+              sudo -E pwsh -File $($MyInvocation.MyCommand.Path)
+              return;
+            }
+          }
+
+          ${{ inputs.command }}
+    
