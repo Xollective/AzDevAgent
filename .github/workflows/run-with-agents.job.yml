@@ -77,6 +77,9 @@ jobs:
 
           $workDirectory = Join-Path $(Resolve-Path $agentRoot) _w
           $agentDirectory = Join-Path $(Resolve-Path $agentRoot) _a
+          $agentBinDirectory = Join-Path $(Resolve-Path $agentDirectory) bin
+
+          New-Item $agentBinDirectory -ItemType directory -Force | Out-Null
 
           . azputils runagent `
             --taskUrl "${{ env.taskUrl }}" `
