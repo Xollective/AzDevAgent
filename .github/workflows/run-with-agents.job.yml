@@ -71,8 +71,12 @@ jobs:
 
           Get-ChildItem Env:
 
-          $workDirectory = Join-Path $(Resolve-Path /home/azp/) _w
-          $agentDirectory = Join-Path $(Resolve-Path /home/azp/) _a
+          $agentRoot = /home/azp/
+
+          New-Item $agentRoot -ItemType directory -Force | Out-Null
+
+          $workDirectory = Join-Path $(Resolve-Path $agentRoot) _w
+          $agentDirectory = Join-Path $(Resolve-Path $agentRoot) _a
 
           . azputils runagent `
             --taskUrl "${{ env.taskUrl }}" `
