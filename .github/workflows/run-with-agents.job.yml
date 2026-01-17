@@ -71,7 +71,7 @@ jobs:
 
           Get-ChildItem Env:
 
-          $agentRoot = /home/azp/
+          $agentRoot = "/home/azp/"
 
           New-Item $agentRoot -ItemType directory -Force | Out-Null
 
